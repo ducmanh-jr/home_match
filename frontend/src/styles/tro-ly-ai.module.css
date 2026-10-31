@@ -1,0 +1,1471 @@
+/* Styles for HomeMatch AI Assistant Workspace - Inspired by HubHome */
+
+main.wsPage {
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  position: relative;
+  font-family: "Landing Inter",Arial,sans-serif;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.ws {
+  background: #f8fafc;
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  padding: 16px 22px 22px;
+  display: flex;
+  gap: 6px;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Single chat view or Split view */
+
+.wsChat {
+  background: #fff;
+  box-sizing: border-box;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.wsSplit .wsChat {
+  flex: 0 0 42%;
+  max-width: none;
+}
+
+@media (max-width: 900px) {
+  .wsSplit .wsChat {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+.resultsSummary {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eef2f6;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.emptyResults {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 16px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+
+.mockMap {
+  position: relative;
+  min-height: 440px;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #eff3ec;
+}
+
+.mockMap > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mapPin {
+  position: absolute;
+  padding: 7px 10px;
+  border: 1px solid #fdba74;
+  border-radius: 20px;
+  background: #fff;
+  color: #c2410c;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 3px 10px #0f172a14;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+.mapPin[aria-pressed="true"] {
+  color: #fff;
+  background: #f97316;
+  z-index: 1;
+}
+
+.mapCaption {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #ffffffeb;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.mapDetail {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 20px #0f172a0f;
+  font-size: 13px;
+}
+
+.mapDetail > span {
+  display: flex;
+  gap: 4px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+/* ================= HERO MODE (Initial Empty State) ================= */
+
+.wsHero {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.wsHeroTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 22px;
+}
+
+.brandLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -.7px;
+  color: #0f172a;
+}
+
+.brandLogo span {
+  color: inherit;
+}
+
+.wsHeroInner {
+  width: min(100% - 48px,760px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: auto;
+  padding: 32px 0 5vh;
+}
+
+.wsHeroMascot {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  flex: none;
+  margin-bottom: 26px;
+}
+
+.spark {
+  position: absolute;
+  color: #f97316;
+  font-weight: 700;
+  animation: pulseSpark 3.6s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.s1 {
+  top: 16px;
+  left: -18px;
+  font-size: 15px;
+  animation-delay: 0s;
+}
+
+.s2 {
+  top: 4px;
+  right: -20px;
+  font-size: 20px;
+  animation-delay: 1.2s;
+}
+
+.s3 {
+  bottom: 2px;
+  right: 2px;
+  font-size: 12px;
+  animation-delay: 2.4s;
+}
+
+@keyframes pulseSpark {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.wsPage .wsHeroInner h1 {
+  font-size: clamp(26px,3.2vw,38px);
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.wsHeroInner h1 em {
+  font-style: normal;
+  color: #f97316;
+  text-decoration: underline;
+  text-decoration-color: #fdba74;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+.wsHeroInner .sub {
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 26px;
+}
+
+/* ================= PROMPT FORM (Hero Form) ================= */
+
+.wsHeroForm {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 16px 16px 12px;
+  box-shadow: 0 14px 35px #0f172a1f;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  transition: border-color .18s;
+}
+
+.wsHeroForm:focus-within {
+  border-color: #fdba74;
+}
+
+.wsHeroForm textarea {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  resize: none;
+  font-size: 15.5px;
+  color: #334155;
+  background: transparent;
+  line-height: 1.5;
+  max-height: 160px;
+  font-family: inherit;
+}
+
+.wsHeroForm textarea::placeholder {
+  color: #94a3b8;
+}
+
+.formToolsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.toolsLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.toolButton {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  border-radius: 11px;
+  min-height: 38px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  flex: none;
+  transition: border-color .15s,color .15s;
+}
+
+.toolButton:hover {
+  border-color: #fdba74;
+  color: #ea580c;
+}
+
+.toolButton.active {
+  background: #ffedd5;
+  border-color: #fdba74;
+  color: #c2410c;
+}
+
+.iconToolButton {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+.sendButton {
+  background: #f97316;
+  color: #fff;
+  border: 0;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background .15s;
+  flex: none;
+  margin-left: auto;
+}
+
+.sendButton:hover:not(:disabled) {
+  background: #ea580c;
+  transform: translateY(-1px);
+}
+
+.sendButton:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+/* ================= PROMPT CHIPS ================= */
+
+.tryPromptTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #334155;
+  margin: 26px 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.chipsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.chipButton {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  border-radius: 13px;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color .12s,box-shadow .12s;
+}
+
+.chipButton:hover {
+  border-color: #fdba74;
+  color: #ea580c;
+  box-shadow: 0 4px 12px #0f172a0f;
+}
+
+/* ================= CITY SKYLINE SVG ================= */
+
+.wsHeroIllus {
+  width: min(560px,94%);
+  margin: 26px auto 0;
+  opacity: .95;
+  mask-image: linear-gradient(90deg,transparent,#000 11% 89%,transparent);
+}
+
+.wsHeroTrust {
+  font-size: 12.5px;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 18px 0 0;
+}
+
+.wsHeroFooterRow {
+  position: absolute;
+  bottom: 14px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wsHeroFooterRow a,
+.wsHeroFooterRow button {
+  color: #334155;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+}
+
+.wsHeroFooterRow a:hover,
+.wsHeroFooterRow button:hover {
+  color: #0f172a;
+}
+
+/* ================= WORKSPACE SPLIT CHAT PANEL ================= */
+
+.wsChatHead {
+  border-bottom: 1px solid #e2e8f0;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 18px;
+  background: #fff;
+}
+
+.chatAvatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  flex: none;
+}
+
+.onlineBadge {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+}
+
+.chatTitleGroup strong {
+  color: #0f172a;
+  font-size: 14.5px;
+  font-weight: 700;
+  display: block;
+}
+
+.chatTitleGroup small {
+  color: #64748b;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chatHeadActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chatHeadBtn {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  height: 32px;
+  color: #334155;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chatHeadBtn:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.messagesList {
+  flex: auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b880 transparent;
+}
+
+.userBubble {
+  align-self: flex-end;
+  background: #f97316;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 16px 16px 4px 16px;
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 82%;
+  white-space: pre-wrap;
+}
+
+.agentBubble {
+  align-self: stretch;
+  color: #334155;
+  font-size: 15px;
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.agentMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.chatInputBox {
+  border-top: 1px solid #e2e8f0;
+  padding: 12px 14px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chatInputBox textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 13.5px;
+  color: #0f172a;
+  font-family: inherit;
+  line-height: 1.4;
+  min-height: 38px;
+}
+
+/* ================= RIGHT CANVAS (Preview & Listings) ================= */
+
+.wsCanvas {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.wsCanvasHead {
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 13px 18px;
+}
+
+.canvasTitle {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.canvasTitle svg {
+  color: #f97316;
+}
+
+.canvasControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggleViewBtn {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.toggleViewBtn:hover {
+  background: #f8fafc;
+}
+
+.toggleViewBtn.active {
+  background: #fff7ed;
+  color: #c2410c;
+  border-color: #fed7aa;
+}
+
+.wsCanvasBody {
+  flex: auto;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8fafc;
+}
+
+/* ================= ROOM CARD (.wsCard) ================= */
+
+.wsCard {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 15px;
+  display: flex;
+  flex: none;
+  overflow: hidden;
+  position: relative;
+  transition: border-color .12s,box-shadow .12s,transform .12s;
+}
+
+.wsCard:hover {
+  border-color: #fdba74;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.wsCard.highlight {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.cardPhoto {
+  width: 148px;
+  min-height: 150px;
+  position: relative;
+  flex: none;
+  background: #e2e8f0;
+}
+
+.photoCount {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  backdrop-filter: blur(2px);
+}
+
+.cardBody {
+  flex: auto;
+  min-width: 0;
+  padding: 11px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.cardPriceRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 8px;
+  flex-wrap: wrap;
+  padding-right: 65px;
+}
+
+.priceHighlight {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ea580c;
+}
+
+.depositText {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.cardTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.34;
+  margin: 0;
+}
+
+.cardLocation {
+  font-size: 11.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tagBadge {
+  background: #ecfdf3;
+  color: #14713d;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 7px;
+  border-radius: 5px;
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 4px;
+}
+
+.bookButton {
+  flex: 1;
+  background: #f97316;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.bookButton:hover {
+  background: #ea580c;
+}
+
+.cardFavBtn,
+.cardCmpBtn {
+  position: absolute;
+  top: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+  transition: all 0.15s ease;
+  z-index: 2;
+  color: #475569;
+}
+
+.cardFavBtn {
+  right: 10px;
+}
+
+.cardCmpBtn {
+  right: 46px;
+}
+
+.cardFavBtn.active {
+  color: #e11d48;
+}
+
+.cardCmpBtn.active {
+  background: #f97316;
+  color: #ffffff;
+}
+
+/* ================= FLOATING GÓP Ý TAB ================= */
+
+.gopYTab {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+  background: #0f172a;
+  color: #fff;
+  border: 1px solid #e2e8f0;
+  border-right: 0;
+  border-radius: 0 10px 10px 0;
+  padding: 12px 7px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  cursor: pointer;
+  box-shadow: -4px 4px 14px #0f172a2e;
+}
+
+.gopYTab:hover {
+  background: #f97316;
+}
+
+.brandLogo > span > span,
+.brandLogo > svg,
+.tryPromptTitle > svg,
+.chipButton > svg,
+.quickFilterTool > svg:first-child {
+  color: #f97316;
+}
+
+.accountNav {
+  display: flex;
+  min-width: 104px;
+  justify-content: flex-end;
+}
+
+.accountNav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.accountNav a:hover {
+  border-color: #e2e8f0;
+  background: #fff;
+}
+
+.mascotHalo {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #fff, #fff7ed 58%, #ffeede);
+  box-shadow: 0 0 0 10px #fff6eebf, 0 0 0 20px #fff6ee61, 0 14px 30px #c2410c1a;
+}
+
+.wsHeroIllus img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.heroDisclaimer {
+  position: absolute;
+  bottom: 14px;
+  left: 22px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 46%;
+  margin: 0;
+  color: #64748b;
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.heroDisclaimer svg {
+  flex: none;
+  opacity: .7;
+}
+
+.composerGroup {
+  position: relative;
+  flex: none;
+  width: 100%;
+  max-width: 720px;
+}
+
+.conversationComposer {
+  width: calc(100% - 32px);
+  max-width: none;
+  margin: 0 16px 18px;
+}
+
+.conversationComposer .wsHeroForm {
+  max-width: none;
+  border-radius: 15px;
+  box-shadow: 0 1px 3px #0f172a14;
+}
+
+.conversationComposer .wsHeroForm textarea {
+  font-size: 14.5px;
+}
+
+.conversationComposer .quickSearchDialog {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  margin-top: 0;
+}
+
+.quickFilterTool {
+  border-radius: 999px;
+  padding: 7px 13px;
+  color: #334155;
+}
+
+.locationTool {
+  gap: 6px;
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.toolsMenuWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.toolsMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 35;
+  min-width: 210px;
+  padding: 5px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 30px #0f172a29;
+}
+
+.conversationComposer .toolsMenu {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+.toolsMenu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  color: #334155;
+  background: transparent;
+  text-align: left;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.toolsMenu button:hover {
+  background: #fff7ed;
+}
+
+.attachment {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 6px 9px;
+  border: 1px solid #fed7aa;
+  border-radius: 11px;
+  background: #fff7ed;
+  font-size: 12.5px;
+}
+
+.attachment img {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.attachment span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  margin-left: auto;
+  padding: 4px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.toolNotice {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12px;
+  text-align: left;
+}
+
+.quickSearchDialog {
+  position: relative;
+  z-index: 30;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  color: #334155;
+  background: #fff;
+  box-shadow: 0 14px 34px #0f172a1f;
+  text-align: left;
+}
+
+.quickSearchHeading,
+.quickSearchHeading strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.quickSearchHeading {
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.quickSearchHeading strong svg {
+  color: #f97316;
+}
+
+.closeButton {
+  display: grid;
+  place-items: center;
+  padding: 5px;
+  border: 0;
+  border-radius: 50%;
+  color: #64748b;
+  background: transparent;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background: #f8fafc;
+}
+
+.quickSearchFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.quickSearchFields label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.quickSearchFields select {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  color: #334155;
+  background: #f8fafc;
+  font: inherit;
+}
+
+.priceChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.priceChips button {
+  padding: 5px 11px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #f8fafc;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.priceChips button[aria-pressed="true"] {
+  border-color: #f97316;
+  color: #c2410c;
+  background: #fff7ed;
+}
+
+.quickSearchActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.quickSearchActions button {
+  min-height: 36px;
+  padding: 0 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.quickSearchActions .applyFilter {
+  border-color: #f97316;
+  color: #fff;
+  background: #f97316;
+}
+
+.requestError {
+  z-index: 40;
+  flex: none;
+  padding: 10px 22px;
+  border-bottom: 1px solid #fcd34d;
+  color: #92400e;
+  background: #fffbeb;
+  font-size: 13px;
+}
+
+.mobileWorkspaceTabs {
+  display: none;
+}
+
+.wsPage:has(.wsSplit) .gopYTab {
+  display: none;
+}
+
+.gopYTab svg {
+  transform: rotate(90deg);
+}
+
+@media (min-width: 900px) {
+  .chipsGrid {
+    flex-wrap: nowrap;
+  }
+
+  .chipButton span {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 900px) {
+  .ws {
+    padding: calc(env(safe-area-inset-top, 0px) + 6px) 12px 12px;
+  }
+
+  .wsSplit .wsChat,
+  .wsSplit .wsCanvas {
+    flex: 1;
+    max-width: none;
+    width: 100%;
+  }
+
+  .wsSplit[data-mobile-panel="chat"] .wsCanvas,
+  .wsSplit[data-mobile-panel="preview"] .wsChat {
+    display: none;
+  }
+
+  .mobileWorkspaceTabs {
+    display: flex;
+    flex: none;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid #e2e8f0;
+    background: #fff;
+  }
+
+  .mobileWorkspaceTabs button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 0 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    color: #64748b;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .mobileWorkspaceTabs button[aria-pressed="true"] {
+    border-color: #fed7aa;
+    color: #c2410c;
+    background: #fff7ed;
+  }
+}
+
+@media (max-width: 700px) {
+  .ws {
+    padding-bottom: 0;
+  }
+
+  .wsHeroInner {
+    box-sizing: border-box;
+    width: calc(100% - 32px);
+    min-height: calc(100dvh - env(safe-area-inset-top, 0px) - 8px);
+    margin: 0 auto;
+    padding: 80px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+    justify-content: flex-start;
+    gap: 18px;
+  }
+
+  .wsHeroInner .sub,
+  .wsHeroInner .wsHeroTrust,
+  .wsHeroFooterRow,
+  .heroDisclaimer,
+  .voiceTool {
+    display: none;
+  }
+
+  .wsHeroMascot {
+    margin-bottom: 14px;
+  }
+
+  .wsPage .wsHeroInner h1 {
+    margin-bottom: 0;
+  }
+
+  .tryPromptTitle {
+    order: 1;
+    margin: 18px 0 0;
+    font-size: 12.5px;
+  }
+
+  .chipsGrid {
+    order: 1;
+    flex: auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: space-evenly;
+    gap: 6px;
+  }
+
+  .chipButton {
+    justify-content: flex-start;
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 11px;
+    font-size: 12px;
+  }
+
+  .chipButton span {
+    max-width: none;
+  }
+
+  .composerGroup {
+    order: 3;
+    margin-top: 18px;
+  }
+
+  .wsHeroForm {
+    gap: 6px;
+    padding: 10px 10px 8px;
+    border-radius: 16px;
+  }
+
+  .wsHeroForm textarea {
+    max-height: 96px;
+    font-size: 14.5px;
+    line-height: 1.4;
+  }
+
+  .toolsLeft,
+  .formToolsRow {
+    gap: 6px;
+  }
+
+  .quickFilterTool {
+    padding: 0 12px;
+    font-size: 12.5px;
+  }
+
+  .locationTool {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+  }
+
+  .locationTool span {
+    display: none;
+  }
+
+  .sendButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .wsHeroIllus {
+    display: none;
+  }
+
+  .chatTitleGroup small,
+  .chatHeadBtn span {
+    display: none;
+  }
+
+  .wsCanvasHead {
+    padding: 12px;
+  }
+
+  .canvasControls {
+    flex-wrap: wrap;
+  }
+
+  .cardPhoto {
+    width: 90px;
+  }
+
+  .cardBody {
+    padding: 10px;
+  }
+
+  .cardPriceRow {
+    padding-top: 32px;
+    padding-right: 0;
+  }
+
+  .priceHighlight {
+    font-size: 14px;
+  }
+
+  .gopYTab {
+    top: auto;
+    bottom: 132px;
+    transform: rotate(180deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .wsHeroTop {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .brandLogo {
+    font-size: 20px;
+  }
+
+  .brandLogo svg {
+    width: 25px;
+  }
+
+  .accountNav a {
+    min-height: 36px;
+    padding: 0 11px;
+    font-size: 12.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wsPage *,
+  .wsPage *::before,
+  .wsPage *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

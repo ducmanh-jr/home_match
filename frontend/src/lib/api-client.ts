@@ -1,6 +1,7 @@
 import { ApiResponse, HealthCheck, SystemStatus } from "@/types";
+import { appConfig } from "@/lib/config";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE = appConfig.apiBaseUrl;
 
 export async function fetchHealth(): Promise<HealthCheck> {
   const res = await fetch(`${API_BASE}/health`, { cache: "no-store" });
