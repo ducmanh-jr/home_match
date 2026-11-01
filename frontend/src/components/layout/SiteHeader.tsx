@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { House, Menu, PencilLine, Search, Sparkles, X, LogOut, RefreshCw, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { referenceLink, siteLink } from "@/lib/config";
 import { useAuth } from "@/features/auth/context";
+import { getRoleHome } from "@/features/auth/navigation";
 import styles from "@/styles/landing.module.css";
 
 const navigation = [
@@ -19,6 +20,7 @@ const navigation = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout, switchRole } = useAuth();
@@ -132,11 +134,15 @@ export function SiteHeader() {
                   <div className="text-slate-400 truncate">{user.email}</div>
                 </div>
 
+                {user.role === "owner" && <Link href="/owner/v2" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 text-slate-700 hover:bg-slate-50"><House size={14} className="text-orange-500" />Khu vực chủ nhà</Link>}
+
                 <button
                   type="button"
                   onClick={() => {
-                    switchRole(user.role === "renter" ? "owner" : "renter");
+                    const nextRole = user.role === "renter" ? "owner" : "renter";
+                    switchRole(nextRole);
                     setUserMenuOpen(false);
+                    router.push(getRoleHome(nextRole));
                   }}
                   className="w-full flex items-center gap-2 px-3.5 py-2.5 text-slate-700 hover:bg-slate-50 transition-colors text-left cursor-pointer"
                 >
@@ -173,7 +179,7 @@ export function SiteHeader() {
             </Link>
             <Link
               className={`${styles.button} ${styles.primaryButton} ${styles.postListing}`}
-              href="/auth/login"
+              href="/auth/login?role=owner&next=%2Fowner%2Fv2%3Fm%3Dtao-tin"
             >
               <PencilLine size={17} aria-hidden="true" /> Đăng tin
             </Link>
@@ -227,6 +233,8 @@ export function SiteHeader() {
             </div>
           )}
 
+          {isAuthenticated && user?.role === "owner" && <Link href="/owner/v2" onClick={() => setMenuOpen(false)}><House size={16} aria-hidden="true" /> Khu vực chủ nhà</Link>}
+
           {navigation.map((item) => (
             <Link
               href={siteLink(item.path)}
@@ -238,7 +246,7 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link href="/auth/login" onClick={() => setMenuOpen(false)}>
+          <Link href={isAuthenticated && user?.role === "owner" ? "/owner/v2?m=tao-tin" : "/auth/login?role=owner&next=%2Fowner%2Fv2%3Fm%3Dtao-tin"} onClick={() => setMenuOpen(false)}>
             <PencilLine size={16} aria-hidden="true" /> Đăng tin cho thuê
           </Link>
         </div>

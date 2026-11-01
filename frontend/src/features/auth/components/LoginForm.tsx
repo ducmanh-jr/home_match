@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, LockKeyhole, House, ShieldCheck, HelpCircle } from "lucide-react";
 import { RoleTabs } from "./RoleTabs";
 import { QuickLoginDemo } from "./QuickLoginDemo";
 import { ForgotPasswordModal } from "./ForgotPasswordModal";
 import { useAuth } from "../context";
 import type { UserRole } from "../types";
+import { getLoginDestination } from "../navigation";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, loginWithGoogle } = useAuth();
-  const [role, setRole] = useState<UserRole>("renter");
+  const [role, setRole] = useState<UserRole>(searchParams.get("role") === "owner" ? "owner" : "renter");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +36,7 @@ export function LoginForm() {
       setSuccessMsg(`Đăng nhập thành công! Chào mừng ${authUser.fullName} (${role === "renter" ? "Người thuê" : "Chủ nhà"}).`);
       
       setTimeout(() => {
-        router.push(role === "renter" ? "/" : "/diagnostics");
+        router.push(getLoginDestination(authUser.role, searchParams.get("next")));
       }, 1000);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Đăng nhập thất bại. Vui lòng thử lại.");
@@ -53,7 +55,7 @@ export function LoginForm() {
       setSuccessMsg(`Đăng nhập Google thành công với vai trò ${role === "renter" ? "Người thuê" : "Chủ nhà"}!`);
       
       setTimeout(() => {
-        router.push(role === "renter" ? "/" : "/diagnostics");
+        router.push(getLoginDestination(authUser.role, searchParams.get("next")));
       }, 800);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Đăng nhập Google thất bại.");
@@ -91,7 +93,7 @@ export function LoginForm() {
       </div>
 
       {/* Quick Demo 1-Click Login for Testers */}
-      <QuickLoginDemo />
+      <QuickLoginDemo nextPath={searchParams.get("next")} />
 
       {/* Role Selection Tabs */}
       <RoleTabs selectedRole={role} onChange={setRole} />

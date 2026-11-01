@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { User, Building2, Sparkles } from "lucide-react";
 import { useAuth } from "../context";
 import type { UserRole } from "../types";
+import { getLoginDestination } from "../navigation";
 
-export function QuickLoginDemo() {
+export function QuickLoginDemo({ nextPath }: { nextPath?: string | null }) {
   const router = useRouter();
   const { quickLogin } = useAuth();
   const [activeRole, setActiveRole] = useState<UserRole | null>(null);
@@ -16,7 +17,7 @@ export function QuickLoginDemo() {
     try {
       await quickLogin(role);
       setTimeout(() => {
-        router.push(role === "renter" ? "/" : "/diagnostics");
+        router.push(getLoginDestination(role, nextPath));
       }, 500);
     } finally {
       setActiveRole(null);

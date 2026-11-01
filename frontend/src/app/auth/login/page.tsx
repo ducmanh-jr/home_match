@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Suspense } from "react";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 export default function LoginPage() {
@@ -6,7 +7,7 @@ export default function LoginPage() {
     <main className="min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-white">
       {/* Left Column: Login Form */}
       <section className="lg:col-span-7 xl:col-span-6 flex flex-col justify-center px-6 py-10 sm:px-12 md:px-16 lg:px-20 overflow-y-auto">
-        <LoginForm />
+        <Suspense fallback={<p className="text-sm text-slate-500" role="status">Đang mở đăng nhập…</p>}><LoginForm /></Suspense>
       </section>
 
       {/* Right Column: Visual Brand Hero (Hidden on Mobile) */}

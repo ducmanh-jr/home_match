@@ -8,6 +8,7 @@ import { House, Eye, EyeOff, UserPlus, Sparkles } from "lucide-react";
 import { RoleTabs } from "@/features/auth/components/RoleTabs";
 import { useAuth } from "@/features/auth/context";
 import type { UserRole } from "@/features/auth/types";
+import { getRoleHome } from "@/features/auth/navigation";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function RegisterPage() {
       await quickLogin(role);
       setSuccess("Đăng ký tài khoản thành công! Đang chuyển hướng...");
       setTimeout(() => {
-        router.push(role === "renter" ? "/" : "/diagnostics");
+        router.push(getRoleHome(role));
       }, 1000);
     } catch {
       setError("Có lỗi xảy ra trong quá trình đăng ký.");
@@ -56,7 +57,7 @@ export default function RegisterPage() {
       await quickLogin(selectedRole);
       setSuccess(`Đăng ký thử nghiệm thành công với vai trò ${selectedRole === "renter" ? "Người thuê" : "Chủ nhà"}!`);
       setTimeout(() => {
-        router.push(selectedRole === "renter" ? "/" : "/diagnostics");
+        router.push(getRoleHome(selectedRole));
       }, 800);
     } finally {
       setLoading(false);
