@@ -4,7 +4,7 @@
 
 Reference: https://hubhome.vn/owner/v2, HTML verified on 2026-11-01. The observed page loads the same owner component/CSS assets collected on 2026-10-31. Those public assets are read-only references, not the application implementation.
 
-Phase A implements the shared foundation: design brief, owner layout, navigation/account integration, UI samples, and linked mock fixtures. Business screens from phases B–E are represented by clearly labeled content placeholders. The overview is a foundation sample, not the completed phase-E dashboard.
+Phase A implements the shared foundation: design brief, owner layout, navigation/account integration, UI samples, and linked mock fixtures. Phase B adds the supply screens described below. Business screens from phases C–E retain their labeled content placeholders. The overview remains a foundation sample, not the completed phase-E dashboard.
 
 No backend, infrastructure, package, or database changes. Work remains on `feature/frontend-Landlords`.
 
@@ -103,3 +103,50 @@ Owner hydration is awaited before showing content. Signed-out visitors get a sig
 - Final browser inventory again reports **The browser access host is unavailable**. No rendered desktop/mobile comparison or client interaction pass is claimed for this delivery.
 
 No business CRUD, real payments, real messaging, real signing or backend authorization is implemented in phase A. No new test suite, library, or backend check was added.
+
+## Phase B — supply screens
+
+### Local routes
+
+| State | Route |
+| --- | --- |
+| Room inventory / floor plan | `/owner/v2?m=can-ho-phong` |
+| Room details | `/owner/v2?m=can-ho-phong&room=room-102` |
+| Listings | `/owner/v2?m=tin-bat-dong-san` |
+| Listing detail / tab | `/owner/v2?m=tin-bat-dong-san&listing=listing-102&tab=photos` |
+| New listing | `/owner/v2?m=tao-tin` |
+| Prefill from room | `/owner/v2?m=tao-tin&room=room-102` |
+| Edit listing | `/owner/v2?m=tao-tin&edit=listing-102` |
+
+- **B1:** Inventory metrics, search, building/status/listing/floor filters, reset, paginated table, mobile cards and floor plan grouped by building/floor.
+- **B2:** Deep-linked room dialog, amenities/photos, current rent/deposit, related listing, lease/invoice summaries and sample history. Room tabs support arrow keys/Home/End; native dialog handles Escape and focus.
+- **B3:** Listing metrics, search/building/status filters, sorting by update/views/content completeness, list/grid/mobile layouts, pagination, selection and hide/repost confirmation. Reposting produces `pending_review`, never a public publication.
+- **B4:** Listing details with overview, content, images/lightbox, fees, performance, leads and persistent sample history. Internal-link copy and card preview are local actions. No fake daily analytics series is invented.
+- **B5:** Steps 1–2 cover room prefill, property kind, area, beds/baths, city/ward/address, rent/deposit, utility fees, amenities, rules and availability date.
+- **B6:** Steps 3–4 cover local photo selection, cover photo/removal, title/description, preview, contact and confirmation. Drafts restore form values, photos and current step. Submission saves a mock listing with `pending_review`, then links to its detail.
+
+### Data and persistence
+
+Canonical building/room fixtures now belong to `features/properties`; the foundation reuses them and retains all phase-A IDs. Listing contracts and mutations belong to `features/listings`. The foundation overview reads the current account's saved listings through the feature API.
+
+`src/lib/mock-storage.ts` uses native IndexedDB, without new packages. Records are scoped to the mock account ID. Listing changes and drafts live in separate keys; drafts have separate keys for new, room-prefilled and edited listings. A saved form draft is local work-in-progress, not a new published or submitted listing. Uploaded JPEG/PNG/WebP data URLs stay on the device. IndexedDB avoids localStorage's small string quota; browser storage limits still apply, and failures are shown rather than overwriting stored work with fixtures.
+
+Draft writes are debounced and queued, explicit Save/Exit await persistence, and internal unmount queues the latest snapshot. Reload/close warns while writes or photo reading are pending. Draft restore validates stored shape. Submission validates every step, saves the current draft and listing, and then removes the draft. A cleanup failure is reported separately from a successful submission.
+
+The mock address catalog is intentionally limited; it is not a nationwide administrative directory. Existing room photographs in `public/images/ai-assistant/` are reused as sample assets. No live photo upload, backend request, moderation, external publication, AI suggestion or eKYC workflow is introduced.
+
+### Source form constraints
+
+Read from the reference's public owner component: area 5–500 m²; monthly rent 500,000–200,000,000 VND; title 10–90 characters; description minimum 60; at least one and at most eight photos; JPEG/PNG/WebP below 5MB each; contact phone ten digits beginning with 0. Local input bounds additionally limit oversized text and nonsensical room counts. The completeness score is deterministic reference-style field coverage, not an AI recommendation or approval decision.
+
+### Phase B verification
+
+- `npx.cmd tsc --noEmit`: passed.
+- `npm.cmd run build`: passed, including Next.js lint/type checks and production generation of `/owner/v2`.
+- `git diff --check`: passed, with normal LF/CRLF conversion notices.
+- Both scoped stylesheets parse; all CSS module references used by the new supply components exist.
+- Development preview restarted at `http://127.0.0.1:3000` after the production build completed.
+- HTTP availability: 23 URLs returned 200, including room/listing lists, room details, all seven listing-detail tabs, new/room-prefilled/edit forms, missing-ID query states, overview/UI kit, authentication, landing, guides and the public assistant. All ten referenced JS/CSS resources and eight reused room photographs returned 200.
+- HTTP responses verify route/resource availability only. They do not verify authenticated client content, mutations or visual matching. The final browser inventory on 2026-11-01 returned no enabled browser and `The browser access host is unavailable`. No rendered desktop/mobile or interaction pass is claimed; this tool failure prevents visual verification in the current session.
+- The client walkthrough still needs room → create → save/restore draft → submit → listing detail → hide/repost, plus mobile and keyboard checks, when browser control is available.
+- No unit/integration suite or backend checks were run for this frontend mock task. No dependency was installed.

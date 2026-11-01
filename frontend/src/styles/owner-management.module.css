@@ -1027,6 +1027,10 @@ div.shell {
   background: #0f172a66;
 }
 
+.dialog.dialogWide {
+  width: min(940px, calc(100vw - 24px));
+}
+
 .dialogPanel {
   display: flex;
   flex-direction: column;

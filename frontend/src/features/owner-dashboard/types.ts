@@ -1,3 +1,5 @@
+import type { ListingStatus } from "@/features/listings/types";
+
 export interface OwnerBuilding {
   id: string;
   name: string;
@@ -16,7 +18,7 @@ export interface OwnerRoom {
 export interface OwnerPreviewData {
   buildings: OwnerBuilding[];
   rooms: OwnerRoom[];
-  listings: { id: string; roomId: string; title: string; status: "published" | "draft" }[];
+  listings: { id: string; roomId: string; title: string; status: ListingStatus }[];
   leads: { id: string; listingId: string; name: string; viewingAt: string | null }[];
   leases: { id: string; roomId: string; tenantName: string; monthlyRent: number; deposit: number }[];
   invoices: { id: string; leaseId: string; amount: number; paidAmount: number; status: "paid" | "pending" }[];

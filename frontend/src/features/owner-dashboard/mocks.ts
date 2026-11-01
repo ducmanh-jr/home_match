@@ -1,18 +1,9 @@
 import type { OwnerPreviewData } from "./types";
+import { propertyInventory } from "@/features/properties/mocks";
 
 export const ownerPreview: OwnerPreviewData = {
-  buildings: [
-    { id: "building-01", name: "HomeMatch Bình Thạnh", address: "Điện Biên Phủ, TP.HCM" },
-    { id: "building-02", name: "HomeMatch Quận 10", address: "Tô Hiến Thành, TP.HCM" },
-  ],
-  rooms: [
-    { id: "room-101", buildingId: "building-01", code: "BT.101", area: 25, monthlyRent: 4500000, status: "occupied" },
-    { id: "room-102", buildingId: "building-01", code: "BT.102", area: 28, monthlyRent: 5200000, status: "available" },
-    { id: "room-201", buildingId: "building-01", code: "BT.201", area: 30, monthlyRent: 5800000, status: "reserved" },
-    { id: "room-301", buildingId: "building-02", code: "Q10.301", area: 22, monthlyRent: 3800000, status: "occupied" },
-    { id: "room-302", buildingId: "building-02", code: "Q10.302", area: 26, monthlyRent: 4900000, status: "available" },
-    { id: "room-401", buildingId: "building-02", code: "Q10.401", area: 32, monthlyRent: 6200000, status: "available" },
-  ],
+  buildings: propertyInventory.buildings,
+  rooms: propertyInventory.rooms,
   listings: [
     { id: "listing-102", roomId: "room-102", title: "Studio thoáng sáng tại Bình Thạnh", status: "published" },
     { id: "listing-302", roomId: "room-302", title: "Phòng đầy đủ nội thất tại Quận 10", status: "published" },
