@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "@/styles/contact.module.css";
+import { Send, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,106 +20,114 @@ export function ContactForm() {
   };
 
   return (
-    <div className={styles.contactFormCard}>
-      <form className={styles.leadForm} onSubmit={handleSubmit}>
+    <div className="bg-white border border-stone-200 rounded-3xl p-6 sm:p-10 shadow-sm">
+      <form className="space-y-5" onSubmit={handleSubmit}>
         {submitted && (
-          <div className={styles.successInline}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium">
+            <CheckCircle2 size={20} className="text-emerald-600 shrink-0" />
             <span>
               Yêu cầu đã được gửi thành công! HomeMatch sẽ liên hệ phản hồi sớm nhất.
             </span>
           </div>
         )}
 
-        <label>
-          Họ và tên *
-          <input required placeholder="Tên của bạn" name="ten" />
-        </label>
+        <div>
+          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5">
+            Họ và tên <span className="text-rose-500">*</span>
+          </label>
+          <input
+            required
+            placeholder="Tên của bạn"
+            name="ten"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
+          />
+        </div>
 
-        <div className={styles.formRow}>
-          <label>
-            Email *
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5">
+              Email <span className="text-rose-500">*</span>
+            </label>
             <input
               required
               type="email"
               placeholder="ban@example.com"
               name="email"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
             />
-          </label>
-          <label>
-            Số điện thoại
-            <input inputMode="tel" placeholder="0901 234 567" name="sdt" />
-          </label>
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5">
+              Số điện thoại
+            </label>
+            <input
+              inputMode="tel"
+              placeholder="0901 234 567"
+              name="sdt"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
+            />
+          </div>
         </div>
 
-        <label>
-          Chủ đề
-          <select name="chu_de" defaultValue="general">
+        <div>
+          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5">
+            Chủ đề
+          </label>
+          <select
+            name="chu_de"
+            defaultValue="general"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
+          >
             <option value="general">Câu hỏi chung</option>
             <option value="renter">Hỗ trợ tìm phòng</option>
             <option value="owner">Hỗ trợ chủ nhà</option>
             <option value="report">Báo cáo tin đăng</option>
           </select>
-        </label>
+        </div>
 
-        <label>
-          URL liên quan
-          <input type="url" placeholder="https://..." name="url_lien_quan" />
-        </label>
+        <div>
+          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5">
+            URL liên quan
+          </label>
+          <input
+            type="url"
+            placeholder="https://..."
+            name="url_lien_quan"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors"
+          />
+        </div>
 
-        <label>
-          Nội dung *
+        <div>
+          <label className="block text-xs font-bold text-stone-700 uppercase tracking-wide mb-1.5">
+            Nội dung <span className="text-rose-500">*</span>
+          </label>
           <textarea
             name="noi_dung"
             required
             rows={5}
             placeholder="Mô tả điều bạn cần hỗ trợ, thời điểm và kết quả mong muốn"
-          ></textarea>
+            className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-colors resize-y"
+          />
+        </div>
+
+        <label className="flex items-start gap-2.5 text-xs text-stone-600 cursor-pointer pt-1">
+          <input type="checkbox" required className="mt-0.5 rounded border-stone-300 text-orange-600 focus:ring-orange-500" />
+          <span>Tôi xác nhận không gửi mật khẩu, OTP hoặc dữ liệu thanh toán.</span>
         </label>
 
-        <label className={styles.contactConsent}>
-          <input type="checkbox" required /> Tôi xác nhận không gửi mật khẩu, OTP
-          hoặc dữ liệu thanh toán.
-        </label>
-
-        <button
-          className={styles.buttonPrimary}
-          type="submit"
-          disabled={isSubmitting}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-send"
+        <div>
+          <Button
+            variant="orange"
+            type="submit"
+            isLoading={isSubmitting}
+            className="w-full sm:w-auto"
           >
-            <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
-            <path d="m21.854 2.147-10.94 10.939"></path>
-          </svg>{" "}
-          {isSubmitting ? "Đang gửi..." : "Gửi yêu cầu"}
-        </button>
+            <Send size={16} /> Gửi yêu cầu
+          </Button>
+        </div>
 
-        <small>
-          HomeMatch phản hồi trong giờ làm việc. Thông tin của bạn chỉ dùng để hỗ
-          trợ yêu cầu này.
+        <small className="block text-xs text-stone-400 mt-2">
+          HomeMatch phản hồi trong giờ làm việc. Thông tin của bạn chỉ dùng để hỗ trợ yêu cầu này.
         </small>
       </form>
     </div>

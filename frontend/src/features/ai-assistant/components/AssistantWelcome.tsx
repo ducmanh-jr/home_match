@@ -5,7 +5,7 @@ import Link from "next/link";
 import { BedDouble, BookOpen, Clock, GraduationCap, House, Info, Lightbulb, Scale, ShieldCheck, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { useAuth } from "@/features/auth/context";
-import styles from "@/styles/tro-ly-ai.module.css";
+import { buttonClasses } from "@/components/ui";
 import { ChatComposer } from "./ChatComposer";
 
 const suggestions = [
@@ -25,63 +25,129 @@ interface AssistantWelcomeProps {
   quickFilter: ReactNode;
 }
 
-export function AssistantWelcome({ inputText, onInputChange, onSearch, onQuickFilter, onHistory, isBusy, quickFilter }: AssistantWelcomeProps) {
+export function AssistantWelcome({
+  inputText,
+  onInputChange,
+  onSearch,
+  onQuickFilter,
+  onHistory,
+  isBusy,
+  quickFilter,
+}: AssistantWelcomeProps) {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
   return (
-    /* HERO INITIAL VIEW */
-    <div className={styles.wsHero}>
+    <div className="min-h-screen flex flex-col justify-between p-4 sm:p-6 max-w-4xl mx-auto w-full">
       {/* Top Bar */}
-      <div className={styles.wsHeroTop}>
-        <Link href="/" className={styles.brandLogo} aria-label="HomeMatch — Trang chủ">
-          <House size={30} strokeWidth={2.6} aria-hidden="true" />
-          <span>Home<span>Match</span></span>
+      <div className="flex items-center justify-between pb-6">
+        <Link href="/" className="flex items-center gap-2 font-bold text-slate-900 tracking-tight" aria-label="HomeMatch — Trang chủ">
+          <span className="p-1.5 rounded-lg bg-orange-500 text-white">
+            <House size={22} strokeWidth={2.5} />
+          </span>
+          <span className="text-lg">
+            Home<span className="text-orange-600">Match</span>
+          </span>
         </Link>
-        <nav aria-label="Điều hướng tài khoản" className={styles.accountNav}>
+        <nav aria-label="Điều hướng tài khoản">
           {!isAuthLoading && (
-            <Link href={isAuthenticated ? "/" : "/auth/login"}>
+            <Link
+              href={isAuthenticated ? "/" : "/auth/login"}
+              className={buttonClasses({ variant: "ghost", size: "sm", className: "text-slate-600" })}
+            >
               {isAuthenticated ? "Về trang chủ" : "Đăng nhập"}
             </Link>
           )}
         </nav>
       </div>
-      <div className={styles.wsHeroInner}>
+
+      {/* Main Hero Section */}
+      <div className="flex flex-col items-center my-auto py-6">
         {/* Mascot & Heading */}
-        <div className={styles.wsHeroMascot} aria-hidden="true">
-          <span className={`${styles.spark} ${styles.s1}`}>✦</span>
-          <span className={`${styles.spark} ${styles.s2}`}>✦</span>
-          <span className={`${styles.spark} ${styles.s3}`}>✦</span>
-          <div className={styles.mascotHalo}>
-            <Image src="/images/landing/assistant.svg" alt="" width={112} height={112} priority />
+        <div className="relative mb-5" aria-hidden="true">
+          <span className="absolute -top-2 -left-3 text-orange-400 text-base animate-pulse">✦</span>
+          <span className="absolute -bottom-1 -right-2 text-amber-400 text-xs animate-pulse delay-150">✦</span>
+          <div className="w-24 h-24 rounded-full bg-gradient-to-b from-orange-100/80 to-amber-50 flex items-center justify-center p-2 shadow-inner border border-orange-200/50">
+            <Image src="/images/landing/assistant.svg" alt="" width={88} height={88} priority />
           </div>
         </div>
-        <h1>Bạn đang tìm một <em>nơi ở</em> như thế nào?</h1>
-        <p className={styles.sub}>HomeMatch Agent sẽ giúp bạn tìm phòng phù hợp nhanh chóng,<br />chính xác và tiết kiệm thời gian.</p>
+
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 text-center tracking-tight max-w-xl">
+          Bạn đang tìm một <em className="text-orange-600 not-italic">nơi ở</em> như thế nào?
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 text-center max-w-lg mt-2 mb-6 leading-relaxed">
+          HomeMatch Agent sẽ giúp bạn tìm phòng phù hợp nhanh chóng, chính xác và tiết kiệm thời gian.
+        </p>
+
         {/* Hero Search Form */}
-        <ChatComposer value={inputText} onChange={onInputChange} onSubmit={onSearch} onQuickFilter={onQuickFilter} isBusy={isBusy}>
-          {quickFilter}
-        </ChatComposer>
-        {/* Prompt Suggestion Chips */}
-        <div className={styles.tryPromptTitle}><Sparkles size={14} aria-hidden="true" /><span>Bạn có thể thử hỏi:</span></div>
-        <div className={styles.chipsGrid}>
-          {suggestions.map(({ icon: Icon, text }) => (
-            <button type="button" className={styles.chipButton} onClick={() => onSearch(text)} key={text} disabled={isBusy}>
-              <Icon size={16} aria-hidden="true" /><span>{text}</span>
-            </button>
-          ))}
+        <div className="w-full">
+          <ChatComposer
+            value={inputText}
+            onChange={onInputChange}
+            onSubmit={onSearch}
+            onQuickFilter={onQuickFilter}
+            isBusy={isBusy}
+          >
+            {quickFilter}
+          </ChatComposer>
         </div>
+
+        {/* Suggestion Chips */}
+        <div className="w-full max-w-2xl mt-6">
+          <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-slate-400 mb-2.5">
+            <Sparkles size={13} className="text-amber-500" />
+            <span>Bạn có thể thử hỏi:</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {suggestions.map(({ icon: Icon, text }) => (
+              <button
+                type="button"
+                key={text}
+                disabled={isBusy}
+                onClick={() => onSearch(text)}
+                className="flex items-center gap-2.5 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-orange-50/50 hover:border-orange-200 text-xs font-medium text-slate-700 hover:text-orange-900 text-left transition-all shadow-xs group"
+              >
+                <Icon size={15} className="text-slate-400 group-hover:text-orange-600 shrink-0" />
+                <span className="truncate">{text}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* City Skyline Illustration */}
-        <div className={styles.wsHeroIllus} aria-hidden="true">
-          <Image src="/images/ai-assistant/city-scene.svg" alt="" width={560} height={108} />
+        <div className="mt-8 opacity-75 pointer-events-none select-none max-w-md w-full" aria-hidden="true">
+          <Image src="/images/ai-assistant/city-scene.svg" alt="" width={560} height={108} className="w-full h-auto" />
         </div>
-        <p className={styles.wsHeroTrust}><ShieldCheck size={16} aria-hidden="true" /><span>Thông tin thật · Giá tốt · An tâm thuê</span></p>
+
+        <p className="flex items-center gap-1.5 text-xs text-slate-400 font-medium mt-3">
+          <ShieldCheck size={15} className="text-emerald-500" />
+          <span>Thông tin thật · Giá tốt · An tâm thuê</span>
+        </p>
       </div>
+
       {/* Footer Utility Row */}
-      <p className={styles.heroDisclaimer}><Info size={13} aria-hidden="true" />HomeMatch Agent có thể mắc lỗi. Vui lòng kiểm tra thông tin trước khi quyết định.</p>
-      <div className={styles.wsHeroFooterRow}>
-        <Link href="/cam-nang"><Lightbulb size={14} aria-hidden="true" /> Cẩm nang</Link>
-        <button type="button" onClick={onHistory}><Clock size={14} aria-hidden="true" /> Lịch sử</button>
-        <Link href="/tro-ly-ai?q=Hướng dẫn tôi tìm phòng với trợ lý AI"><BookOpen size={14} aria-hidden="true" /> Hướng dẫn sử dụng</Link>
+      <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+        <p className="flex items-center gap-1.5 m-0 text-center sm:text-left text-[11px]">
+          <Info size={13} className="shrink-0" />
+          HomeMatch Agent có thể mắc lỗi. Vui lòng kiểm tra thông tin trước khi quyết định.
+        </p>
+        <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
+          <Link href="/cam-nang" className="flex items-center gap-1 hover:text-orange-600 transition-colors">
+            <Lightbulb size={13} /> Cẩm nang
+          </Link>
+          <button
+            type="button"
+            onClick={onHistory}
+            className="flex items-center gap-1 hover:text-orange-600 transition-colors"
+          >
+            <Clock size={13} /> Lịch sử
+          </button>
+          <Link
+            href="/tro-ly-ai?q=Hướng dẫn tôi tìm phòng với trợ lý AI"
+            className="flex items-center gap-1 hover:text-orange-600 transition-colors"
+          >
+            <BookOpen size={13} /> Hướng dẫn
+          </Link>
+        </div>
       </div>
     </div>
   );

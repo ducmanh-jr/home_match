@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { CalendarCheck, Heart, Layers, LayoutList, MapPin, Map as MapIcon, Scale } from "lucide-react";
 import type { RoomListing } from "../types";
-import styles from "@/styles/tro-ly-ai.module.css";
+import { Button, Card, Badge } from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 interface ResultsPanelProps {
   canvasView: "list" | "map" | "compare";
@@ -16,189 +17,271 @@ interface ResultsPanelProps {
   setBookingListing: (listing: RoomListing) => void;
 }
 
-export function ResultsPanel({canvasView, setCanvasView, displayedListings, listings, favorites, comparedIds, handleToggleFavorite, handleToggleCompare, setBookingListing}: ResultsPanelProps) {
+export function ResultsPanel({
+  canvasView,
+  setCanvasView,
+  displayedListings,
+  listings,
+  favorites,
+  comparedIds,
+  handleToggleFavorite,
+  handleToggleCompare,
+  setBookingListing,
+}: ResultsPanelProps) {
   const [selectedMapId, setSelectedMapId] = useState<string | null>(null);
   const mapListing = displayedListings.find(listing => listing.id === selectedMapId) ?? displayedListings[0];
   const comparedListings = listings.filter(listing => comparedIds.includes(listing.id));
+
   return (
-          <aside className={styles.wsCanvas}>
-            <div className={styles.wsCanvasHead}>
-              <div className={styles.canvasTitle}>
-                <Layers size={16} />
-                <span>Preview</span>
-              </div>
+    <aside className="h-full flex flex-col bg-slate-50/60 border-l border-slate-200 overflow-hidden w-full">
+      {/* Canvas Top Head */}
+      <div className="h-14 px-4 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase tracking-wider">
+          <Layers size={16} className="text-orange-500" />
+          <span>Xem phòng</span>
+        </div>
 
-              <div className={styles.canvasControls}>
-                <button
-                  type="button"
-                  onClick={() => setCanvasView("list")}
-                  aria-pressed={canvasView === "list"}
-                  className={`${styles.toggleViewBtn} ${canvasView === "list" ? styles.active : ""}`}
-                >
-                  <LayoutList size={14} /> Danh sách
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCanvasView("map")}
-                  aria-pressed={canvasView === "map"}
-                  className={`${styles.toggleViewBtn} ${canvasView === "map" ? styles.active : ""}`}
-                >
-                  <MapIcon size={14} /> Bản đồ
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCanvasView("compare")}
-                  aria-pressed={canvasView === "compare"}
-                  className={`${styles.toggleViewBtn} ${canvasView === "compare" ? styles.active : ""}`}
-                >
-                  <Scale size={14} /> So sánh ({comparedIds.length})
-                </button>
-              </div>
-            </div>
+        <div className="inline-flex p-1 rounded-lg bg-slate-100 border border-slate-200/60 text-xs">
+          <button
+            type="button"
+            onClick={() => setCanvasView("list")}
+            aria-pressed={canvasView === "list"}
+            className={cn(
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-colors",
+              canvasView === "list" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800",
+            )}
+          >
+            <LayoutList size={13} /> Danh sách
+          </button>
+          <button
+            type="button"
+            onClick={() => setCanvasView("map")}
+            aria-pressed={canvasView === "map"}
+            className={cn(
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-colors",
+              canvasView === "map" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800",
+            )}
+          >
+            <MapIcon size={13} /> Bản đồ
+          </button>
+          <button
+            type="button"
+            onClick={() => setCanvasView("compare")}
+            aria-pressed={canvasView === "compare"}
+            className={cn(
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-colors",
+              canvasView === "compare" ? "bg-white text-slate-900 shadow-xs" : "text-slate-500 hover:text-slate-800",
+            )}
+          >
+            <Scale size={13} /> So sánh ({comparedIds.length})
+          </button>
+        </div>
+      </div>
 
-            <div className={styles.resultsSummary}>{displayedListings.length} phòng phù hợp với nhu cầu của bạn</div>
+      {/* Results Counter Banner */}
+      <div className="px-4 py-2 text-xs font-medium text-slate-500 bg-white/70 border-b border-slate-100 shrink-0">
+        {displayedListings.length} phòng phù hợp với nhu cầu của bạn
+      </div>
 
-            <div className={styles.wsCanvasBody}>
-              {canvasView === "map" ? (
-                /* Map Simulation Mode */
-                <div className={styles.mockMap} aria-label="Sơ đồ vị trí phòng minh họa">
-                  <svg viewBox="0 0 600 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-                    <rect width="600" height="500" fill="#eff3ec" />
-                    <path d="M470 -30Q350 90 480 200T470 530" fill="none" stroke="#bedee9" strokeWidth="62" />
-                    <g fill="#dbe8d3"><rect x="40" y="40" width="105" height="95" rx="12" /><rect x="220" y="280" width="110" height="120" rx="18" /><rect x="45" y="340" width="75" height="90" rx="12" /></g>
-                    <g fill="none" stroke="white" strokeWidth="13"><path d="M-20 160L620 320M110 -20L260 520M-30 410L590 40M-20 270L610 430M280 -30L430 520" /><path d="M20 -20L155 520M-30 40L620 190" strokeWidth="7" /></g>
-                    <g fill="#84928a" fontSize="12" fontFamily="Arial, sans-serif"><text x="80" y="235">QUẬN 10</text><text x="310" y="110">BÌNH THẠNH</text><text x="220" y="345">Công viên</text></g>
-                  </svg>
-                  {displayedListings.map((listing, index) => (
-                    <button
-                      key={listing.id}
-                      type="button"
-                      className={styles.mapPin}
-                      style={{ left: `${20 + (index % 3) * 26}%`, top: `${24 + Math.floor(index / 3) * 28 + (index % 2) * 13}%` }}
-                      aria-pressed={mapListing?.id === listing.id}
-                      onClick={() => setSelectedMapId(listing.id)}
-                    >{listing.priceStr}</button>
-                  ))}
-                  <span className={styles.mapCaption}>Sơ đồ minh họa • Dữ liệu mẫu</span>
-                  {mapListing && (
-                    <div className={styles.mapDetail}>
-                      <strong>{mapListing.title}</strong>
-                      <span><MapPin size={13} /> {mapListing.address}</span>
-                      <button type="button" className={styles.bookButton} onClick={() => setBookingListing(mapListing)}><CalendarCheck size={14} /> Đặt lịch xem</button>
-                    </div>
-                  )}
-                  {displayedListings.length === 0 && <p className={styles.emptyResults}>Chưa có phòng trong bộ lọc này.</p>}
+      {/* Main Canvas Body */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {canvasView === "map" ? (
+          /* Map View */
+          <div className="relative w-full h-[480px] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-inner">
+            <svg viewBox="0 0 600 500" preserveAspectRatio="xMidYMid slice" className="w-full h-full" aria-hidden="true">
+              <rect width="600" height="500" fill="#eff3ec" />
+              <path d="M470 -30Q350 90 480 200T470 530" fill="none" stroke="#bedee9" strokeWidth="62" />
+              <g fill="#dbe8d3">
+                <rect x="40" y="40" width="105" height="95" rx="12" />
+                <rect x="220" y="280" width="110" height="120" rx="18" />
+                <rect x="45" y="340" width="75" height="90" rx="12" />
+              </g>
+              <g fill="none" stroke="white" strokeWidth="13">
+                <path d="M-20 160L620 320M110 -20L260 520M-30 410L590 40M-20 270L610 430M280 -30L430 520" />
+                <path d="M20 -20L155 520M-30 40L620 190" strokeWidth="7" />
+              </g>
+              <g fill="#84928a" fontSize="12" fontFamily="Arial, sans-serif">
+                <text x="80" y="235">QUẬN 10</text>
+                <text x="310" y="110">BÌNH THẠNH</text>
+                <text x="220" y="345">Công viên</text>
+              </g>
+            </svg>
+
+            {displayedListings.map((listing, index) => (
+              <button
+                key={listing.id}
+                type="button"
+                onClick={() => setSelectedMapId(listing.id)}
+                aria-pressed={mapListing?.id === listing.id}
+                style={{
+                  left: `${20 + (index % 3) * 26}%`,
+                  top: `${24 + Math.floor(index / 3) * 28 + (index % 2) * 13}%`,
+                }}
+                className={cn(
+                  "absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded-full text-xs font-bold transition-all shadow-md z-10",
+                  mapListing?.id === listing.id
+                    ? "bg-orange-600 text-white scale-110 ring-4 ring-orange-200"
+                    : "bg-white text-slate-800 hover:bg-orange-50 hover:text-orange-700",
+                )}
+              >
+                {listing.priceStr}
+              </button>
+            ))}
+
+            <span className="absolute top-3 left-3 px-2 py-1 rounded bg-black/60 text-[10px] text-white font-medium">
+              Sơ đồ minh họa • Dữ liệu mẫu
+            </span>
+
+            {mapListing && (
+              <div className="absolute bottom-3 left-3 right-3 p-3.5 rounded-xl bg-white border border-slate-200 shadow-xl flex items-center justify-between gap-3 z-20">
+                <div className="truncate">
+                  <strong className="text-xs font-bold text-slate-900 block truncate">{mapListing.title}</strong>
+                  <span className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5 truncate">
+                    <MapPin size={12} className="text-slate-400 shrink-0" /> {mapListing.address}
+                  </span>
                 </div>
-              ) : canvasView === "compare" ? (
-                /* Compare Simulation Mode */
-                <div className="bg-white rounded-2xl p-4 border border-slate-200">
-                  <h4 className="font-bold text-slate-900 text-sm mb-3 flex items-center gap-2">
-                    <Scale size={16} className="text-orange-500" /> So sánh phòng đã chọn ({comparedListings.length}/2)
-                  </h4>
-                  {comparedListings.length < 2 && <p className={styles.emptyResults}>Chọn biểu tượng so sánh trên hai tin phòng để xem thông tin cạnh nhau.</p>}
-                  <div className="grid grid-cols-2 gap-4">
-                    {comparedListings.map((l) => (
-                      <div key={l.id} className="border border-slate-200 rounded-xl p-3 bg-slate-50 flex flex-col gap-2">
-                        <div className="font-bold text-slate-900 text-xs leading-tight">{l.title}</div>
-                        <div className="text-orange-600 font-extrabold text-sm">{l.priceStr}</div>
-                        <div className="text-[11px] text-slate-600">Diện tích: <b>{l.areaM2} m²</b></div>
-                        <div className="text-[11px] text-slate-600">Điện: <b>{l.electricity}</b></div>
-                        <div className="text-[11px] text-slate-600">Nước: <b>{l.water}</b></div>
-                        <div className="text-[11px] text-slate-600">Xe: <b>{l.parking}</b></div>
-                        <button
-                          type="button"
-                          onClick={() => setBookingListing(l)}
-                          className="mt-2 w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold"
-                        >
-                          Đặt lịch căn này
-                        </button>
-                      </div>
-                    ))}
+                <Button variant="orange" size="sm" onClick={() => setBookingListing(mapListing)} className="shrink-0">
+                  <CalendarCheck size={14} /> Đặt lịch
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : canvasView === "compare" ? (
+          /* Compare View */
+          <Card className="p-4 space-y-4">
+            <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Scale size={16} className="text-orange-500" /> So sánh phòng đã chọn ({comparedListings.length}/2)
+            </h4>
+            {comparedListings.length < 2 && (
+              <p className="p-3 rounded-lg bg-orange-50 border border-orange-200/60 text-xs text-orange-800">
+                Chọn biểu tượng so sánh (biểu tượng cân) trên hai tin phòng để đối chiếu trực quan.
+              </p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {comparedListings.map(l => (
+                <div key={l.id} className="border border-slate-200 rounded-xl p-3 bg-slate-50 flex flex-col justify-between gap-2.5">
+                  <div>
+                    <div className="font-bold text-slate-900 text-xs leading-tight mb-1">{l.title}</div>
+                    <div className="text-orange-600 font-extrabold text-sm mb-2">{l.priceStr}</div>
+                    <div className="space-y-1 text-xs text-slate-600">
+                      <div>Diện tích: <strong className="text-slate-800">{l.areaM2} m²</strong></div>
+                      <div>Điện: <strong className="text-slate-800">{l.electricity}</strong></div>
+                      <div>Nước: <strong className="text-slate-800">{l.water}</strong></div>
+                      <div>Xe: <strong className="text-slate-800">{l.parking}</strong></div>
+                    </div>
                   </div>
+                  <Button variant="orange" size="sm" onClick={() => setBookingListing(l)} className="w-full mt-2">
+                    Đặt lịch căn này
+                  </Button>
                 </div>
-              ) : (
-                /* Normal Listing Cards View */
-                displayedListings.length === 0 ? <div className={styles.emptyResults}><HouseEmpty />Không có phòng phù hợp. Hãy đổi khu vực hoặc tăng ngân sách trong Tìm nhanh.</div> : displayedListings.map((listing) => (
-                  <article
-                    key={listing.id}
-                    className={`${styles.wsCard} ${comparedIds.includes(listing.id) ? styles.highlight : ""}`}
-                  >
-                    {/* Favorite Button */}
-                    <button
-                      type="button"
-                      onClick={(e) => handleToggleFavorite(listing.id, e)}
-                      className={`${styles.cardFavBtn} ${favorites.includes(listing.id) ? styles.active : ""}`}
-                      title={favorites.includes(listing.id) ? "Bỏ lưu tin" : "Lưu tin này"}
-                      aria-label={`${favorites.includes(listing.id) ? "Bỏ lưu" : "Lưu"} ${listing.title}`}
-                      aria-pressed={favorites.includes(listing.id)}
-                    >
-                      <Heart size={16} fill={favorites.includes(listing.id) ? "currentColor" : "none"} />
-                    </button>
+              ))}
+            </div>
+          </Card>
+        ) : (
+          /* Normal List Cards */
+          displayedListings.length === 0 ? (
+            <div className="py-12 text-center text-xs text-slate-400 space-y-2">
+              <MapPin size={28} className="mx-auto text-slate-300" />
+              <p>Không có phòng phù hợp. Hãy đổi khu vực hoặc tăng ngân sách trong Tìm nhanh.</p>
+            </div>
+          ) : (
+            displayedListings.map(listing => {
+              const isFav = favorites.includes(listing.id);
+              const isCmp = comparedIds.includes(listing.id);
+              return (
+                <Card
+                  key={listing.id}
+                  className={cn(
+                    "p-3 rounded-xl border flex gap-3 relative hover:shadow-md transition-all group",
+                    isCmp ? "border-orange-400 bg-orange-50/20 ring-1 ring-orange-300" : "border-slate-200 bg-white",
+                  )}
+                >
+                  {/* Photo Thumbnail */}
+                  <div className="w-24 sm:w-28 aspect-[4/3] rounded-lg overflow-hidden relative shrink-0 bg-slate-100">
+                    <Image
+                      src={listing.photos[0]}
+                      alt={listing.title}
+                      fill
+                      sizes="112px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-200"
+                    />
+                    <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/60 text-[9px] text-white font-medium">
+                      1/{listing.photos.length}
+                    </span>
+                  </div>
 
-                    {/* Compare Button */}
-                    <button
-                      type="button"
-                      onClick={(e) => handleToggleCompare(listing.id, e)}
-                      className={`${styles.cardCmpBtn} ${comparedIds.includes(listing.id) ? styles.active : ""}`}
-                      title="Chọn để so sánh"
-                      aria-label={`So sánh ${listing.title}`}
-                      aria-pressed={comparedIds.includes(listing.id)}
-                    >
-                      <Scale size={15} />
-                    </button>
+                  {/* Body Content */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-0.5">
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-sm font-extrabold text-orange-600">{listing.priceStr}</span>
+                          <span className="text-[11px] text-slate-400">cọc {listing.depositStr}</span>
+                        </div>
 
-                    {/* Thumbnail */}
-                    <div className={styles.cardPhoto}>
-                      <Image
-                        src={listing.photos[0]}
-                        alt={listing.title}
-                        fill
-                        sizes="(max-width: 700px) 90px, 148px"
-                        className="object-cover"
-                      />
-                      <span className={styles.photoCount}>1/{listing.photos.length} ảnh</span>
-                    </div>
-
-                    {/* Body */}
-                    <div className={styles.cardBody}>
-                      <div className={styles.cardPriceRow}>
-                        <span className={styles.priceHighlight}>{listing.priceStr}</span>
-                        <span className={styles.depositText}>{listing.depositStr}</span>
+                        {/* Top action icons */}
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={e => handleToggleCompare(listing.id, e)}
+                            aria-label={`So sánh ${listing.title}`}
+                            aria-pressed={isCmp}
+                            title="So sánh phòng"
+                            className={cn(
+                              "p-1.5 rounded-md transition-colors",
+                              isCmp ? "text-orange-600 bg-orange-100" : "text-slate-400 hover:text-slate-700 hover:bg-slate-100",
+                            )}
+                          >
+                            <Scale size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={e => handleToggleFavorite(listing.id, e)}
+                            aria-label={`${isFav ? "Bỏ lưu" : "Lưu"} ${listing.title}`}
+                            aria-pressed={isFav}
+                            title={isFav ? "Bỏ lưu tin" : "Lưu tin"}
+                            className={cn(
+                              "p-1.5 rounded-md transition-colors",
+                              isFav ? "text-rose-500 bg-rose-50" : "text-slate-400 hover:text-rose-500 hover:bg-slate-100",
+                            )}
+                          >
+                            <Heart size={14} fill={isFav ? "currentColor" : "none"} />
+                          </button>
+                        </div>
                       </div>
 
-                      <h3 className={styles.cardTitle}>{listing.title}</h3>
-
-                      <div className={styles.cardLocation}>
-                        <MapPin size={13} className="text-slate-400 shrink-0" />
+                      <h3 className="text-xs font-bold text-slate-900 line-clamp-1 leading-snug">{listing.title}</h3>
+                      <div className="flex items-center gap-1 text-[11px] text-slate-500 mt-0.5 truncate">
+                        <MapPin size={11} className="text-slate-400 shrink-0" />
                         <span className="truncate">{listing.address}</span>
                       </div>
-
-                      <div className={styles.cardTags}>
-                        <span className={styles.tagBadge}>{listing.areaM2} m²</span>
-                        <span className={styles.tagBadge}>Tầng {listing.floor}</span>
-                        {listing.tags.slice(0, 2).map((t) => (
-                          <span key={t} className={styles.tagBadge}>{t}</span>
-                        ))}
-                      </div>
-
-                      <div className={styles.cardActions}>
-                        <button
-                          type="button"
-                          onClick={() => setBookingListing(listing)}
-                          className={styles.bookButton}
-                        >
-                          <CalendarCheck size={14} /> Đặt lịch xem
-                        </button>
-                      </div>
                     </div>
-                  </article>
-                ))
-              )}
-            </div>
-          </aside>
-  );
-}
 
-function HouseEmpty() {
-  return <MapPin size={24} aria-hidden="true" />;
+                    <div className="flex items-center justify-between pt-2 mt-1 border-t border-slate-100">
+                      <div className="flex items-center gap-1">
+                        <Badge tone="default" className="text-[10px] py-0 px-1.5">
+                          {listing.areaM2} m²
+                        </Badge>
+                        <Badge tone="default" className="text-[10px] py-0 px-1.5">
+                          Tầng {listing.floor}
+                        </Badge>
+                      </div>
+                      <Button
+                        variant="orange"
+                        size="sm"
+                        onClick={() => setBookingListing(listing)}
+                        className="text-[11px] h-7 px-2.5"
+                      >
+                        <CalendarCheck size={12} /> Đặt lịch
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })
+          )
+        )}
+      </div>
+    </aside>
+  );
 }

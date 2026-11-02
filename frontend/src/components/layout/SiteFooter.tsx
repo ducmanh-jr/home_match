@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { CircleCheck, Clock3, House, ShieldCheck } from "lucide-react";
-import { referenceLink, siteLink } from "@/lib/config";
-import styles from "@/styles/landing.module.css";
+import { siteLink } from "@/lib/config";
 
 const columns = [
   {
@@ -48,47 +47,67 @@ const columns = [
 export function SiteFooter() {
   return (
     <>
-      <section className={styles.assuranceStrip} aria-label="Cam kết dịch vụ">
-        <div className={`${styles.container} ${styles.assuranceGrid}`}>
-          <div>
-            <ShieldCheck size={24} aria-hidden="true" />
-            <span><strong>Tin đăng được kiểm duyệt</strong><small>Nội dung rõ ràng trước khi hiển thị</small></span>
+      <section className="bg-stone-100 border-t border-b border-stone-200 py-8" aria-label="Cam kết dịch vụ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex items-start gap-3.5">
+            <ShieldCheck size={26} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <strong className="block text-sm font-bold text-stone-900">Tin đăng được kiểm duyệt</strong>
+              <small className="block text-xs text-stone-600 mt-0.5">Nội dung rõ ràng trước khi hiển thị</small>
+            </div>
           </div>
-          <div>
-            <CircleCheck size={24} aria-hidden="true" />
-            <span><strong>Chi phí được trình bày rõ</strong><small>Dễ so sánh trước khi đi xem</small></span>
+          <div className="flex items-start gap-3.5">
+            <CircleCheck size={26} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <strong className="block text-sm font-bold text-stone-900">Chi phí được trình bày rõ</strong>
+              <small className="block text-xs text-stone-600 mt-0.5">Dễ so sánh trước khi đi xem</small>
+            </div>
           </div>
-          <div>
-            <Clock3 size={24} aria-hidden="true" />
-            <span><strong>Hỗ trợ đặt lịch xem</strong><small>Chọn thời gian phù hợp với bạn</small></span>
+          <div className="flex items-start gap-3.5">
+            <Clock3 size={26} className="text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
+            <div>
+              <strong className="block text-sm font-bold text-stone-900">Hỗ trợ đặt lịch xem</strong>
+              <small className="block text-xs text-stone-600 mt-0.5">Chọn thời gian phù hợp với bạn</small>
+            </div>
           </div>
         </div>
       </section>
-      <footer className={styles.footer} id="help">
-        <div className={`${styles.container} ${styles.footerGrid}`}>
-          <div className={styles.footerBrand}>
-            <Link href="/" className={styles.brand} aria-label="HomeMatch — Trang chủ">
-              <House size={28} strokeWidth={2.5} aria-hidden="true" />
-              <span>Home<span>Match</span></span>
+
+      <footer className="bg-stone-900 text-stone-300 pt-16 pb-12 text-sm" id="help">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-10">
+          <div className="col-span-2">
+            <Link href="/" className="inline-flex items-center gap-2 text-white font-extrabold text-xl tracking-tight mb-4" aria-label="HomeMatch — Trang chủ">
+              <House size={26} strokeWidth={2.5} className="text-orange-500" aria-hidden="true" />
+              <span>Home<span className="text-orange-500">Match</span></span>
             </Link>
-            <p>Thuê đúng nơi — Sống đúng ý.</p>
-            <span>Nền tảng tìm kiếm chỗ ở và đặt lịch xem dành cho người thuê tại Việt Nam.</span>
+            <p className="font-semibold text-white mb-2">Thuê đúng nơi — Sống đúng ý.</p>
+            <span className="text-stone-400 text-xs leading-relaxed block max-w-sm">
+              Nền tảng tìm kiếm chỗ ở và đặt lịch xem dành cho người thuê tại Việt Nam.
+            </span>
           </div>
+
           {columns.map((column) => (
-            <div className={styles.footerColumn} key={column.title}>
-              <h3>{column.title}</h3>
-              {column.links.map(([label, path]) => (
-                <Link href={siteLink(path)} key={label}>{label}</Link>
-              ))}
+            <div className="space-y-3" key={column.title}>
+              <h3 className="font-bold text-white text-xs uppercase tracking-wider">{column.title}</h3>
+              <ul className="space-y-2 text-xs">
+                {column.links.map(([label, path]) => (
+                  <li key={label}>
+                    <Link href={siteLink(path)} className="text-stone-400 hover:text-white transition-colors">
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
-        <div className={`${styles.container} ${styles.legalBar}`}>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-8 border-t border-stone-800 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-stone-500">
           <span>© {new Date().getFullYear()} HomeMatch. Bảo lưu mọi quyền.</span>
-          <div>
-            <Link href="/privacy">Chính sách bảo mật</Link>
-            <Link href="/terms">Điều khoản sử dụng</Link>
-            <Link href="/terms">Quy chế hoạt động</Link>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="hover:text-stone-300 transition-colors">Chính sách bảo mật</Link>
+            <Link href="/terms" className="hover:text-stone-300 transition-colors">Điều khoản sử dụng</Link>
+            <Link href="/terms" className="hover:text-stone-300 transition-colors">Quy chế hoạt động</Link>
           </div>
         </div>
       </footer>

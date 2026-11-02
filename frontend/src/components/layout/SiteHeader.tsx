@@ -4,10 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { House, Menu, PencilLine, Search, Sparkles, X, LogOut, RefreshCw, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { referenceLink, siteLink } from "@/lib/config";
+import { siteLink } from "@/lib/config";
 import { useAuth } from "@/features/auth/context";
 import { getRoleHome } from "@/features/auth/navigation";
-import styles from "@/styles/landing.module.css";
 
 const navigation = [
   { label: "Trợ lý AI", path: "/tro-ly-ai", ai: true },
@@ -75,12 +74,14 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   return (
-    <header className={styles.siteHeader} ref={header}>
-      <a href="#main-content" className={styles.skipLink}>Bỏ qua điều hướng</a>
-      <div className={`${styles.container} ${styles.headerInner}`}>
+    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-stone-200 transition-shadow" ref={header}>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-orange-600 focus:text-white focus:rounded-md">
+        Bỏ qua điều hướng
+      </a>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <button
           ref={menuButton}
-          className={`${styles.iconButton} ${styles.mobileOnly}`}
+          className="xl:hidden p-2 text-stone-600 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors"
           type="button"
           aria-label={menuOpen ? "Đóng menu" : "Mở menu"}
           aria-expanded={menuOpen}
@@ -89,21 +90,31 @@ export function SiteHeader() {
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
-        <Link href="/" className={styles.brand} aria-label="HomeMatch — Trang chủ">
-          <House size={28} strokeWidth={2.5} aria-hidden="true" />
-          <span>Home<span>Match</span></span>
+
+        <Link href="/" className="flex items-center gap-2 text-stone-900 font-extrabold text-xl tracking-tight hover:opacity-90 transition-opacity" aria-label="HomeMatch — Trang chủ">
+          <House size={26} strokeWidth={2.5} className="text-orange-600" aria-hidden="true" />
+          <span>Home<span className="text-orange-600">Match</span></span>
         </Link>
-        <nav className={styles.desktopNav} aria-label="Điều hướng chính">
-          {navigation.map((item) => (
-            <Link
-              href={siteLink(item.path)}
-              key={item.label}
-              aria-current={pathname === item.path ? "page" : undefined}
-            >
-              {item.ai && <Sparkles size={14} aria-hidden="true" />}
-              {item.label}
-            </Link>
-          ))}
+
+        <nav className="hidden xl:flex items-center gap-1" aria-label="Điều hướng chính">
+          {navigation.map((item) => {
+            const isActive = pathname === item.path;
+            return (
+              <Link
+                href={siteLink(item.path)}
+                key={item.label}
+                aria-current={isActive ? "page" : undefined}
+                className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                  isActive
+                    ? "text-orange-600 font-bold bg-orange-50/80"
+                    : "text-stone-600 hover:text-stone-900 hover:bg-stone-50 font-medium"
+                }`}
+              >
+                {item.ai && <Sparkles size={14} className="text-amber-500" aria-hidden="true" />}
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Auth status on Desktop */}
@@ -112,29 +123,34 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => setUserMenuOpen((prev) => !prev)}
-              className="flex items-center gap-2 py-1.5 px-3 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors cursor-pointer text-sm"
+              className="flex items-center gap-2 py-1.5 px-3 rounded-full bg-stone-100 hover:bg-stone-200 border border-stone-200 transition-colors cursor-pointer text-sm"
               aria-expanded={userMenuOpen}
             >
-              <div className="w-7 h-7 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold text-xs">
+              <div className="w-7 h-7 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold text-xs">
                 {user.fullName.charAt(0)}
               </div>
-              <span className="font-semibold text-slate-800 text-xs">
+              <span className="font-semibold text-stone-800 text-xs">
                 {user.fullName}
               </span>
               <span className="px-2 py-0.5 text-[10px] rounded-full bg-orange-100 text-orange-800 font-bold uppercase">
                 {user.role === "renter" ? "Người thuê" : "Chủ nhà"}
               </span>
-              <ChevronDown size={14} className="text-slate-400" />
+              <ChevronDown size={14} className="text-stone-400" />
             </button>
 
             {userMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 text-xs">
-                <div className="px-3.5 py-2 border-b border-slate-100">
-                  <div className="font-bold text-slate-900">{user.fullName}</div>
-                  <div className="text-slate-400 truncate">{user.email}</div>
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-stone-100 py-2 z-50 text-xs">
+                <div className="px-3.5 py-2 border-b border-stone-100">
+                  <div className="font-bold text-stone-900">{user.fullName}</div>
+                  <div className="text-stone-400 truncate">{user.email}</div>
                 </div>
 
-                {user.role === "owner" && <Link href="/owner/v2" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 text-slate-700 hover:bg-slate-50"><House size={14} className="text-orange-500" />Khu vực chủ nhà</Link>}
+                {user.role === "owner" && (
+                  <Link href="/owner/v2" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-2 px-3.5 py-2.5 text-stone-700 hover:bg-stone-50 font-medium">
+                    <House size={14} className="text-orange-500" />
+                    Khu vực chủ nhà
+                  </Link>
+                )}
 
                 <button
                   type="button"
@@ -144,7 +160,7 @@ export function SiteHeader() {
                     setUserMenuOpen(false);
                     router.push(getRoleHome(nextRole));
                   }}
-                  className="w-full flex items-center gap-2 px-3.5 py-2.5 text-slate-700 hover:bg-slate-50 transition-colors text-left cursor-pointer"
+                  className="w-full flex items-center gap-2 px-3.5 py-2.5 text-stone-700 hover:bg-stone-50 transition-colors text-left cursor-pointer font-medium"
                 >
                   <RefreshCw size={14} className="text-orange-500" />
                   <span>
@@ -153,7 +169,7 @@ export function SiteHeader() {
                   </span>
                 </button>
 
-                <div className="border-t border-slate-100 my-1" />
+                <div className="border-t border-stone-100 my-1" />
 
                 <button
                   type="button"
@@ -161,7 +177,7 @@ export function SiteHeader() {
                     logout();
                     setUserMenuOpen(false);
                   }}
-                  className="w-full flex items-center gap-2 px-3.5 py-2.5 text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer"
+                  className="w-full flex items-center gap-2 px-3.5 py-2.5 text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer font-medium"
                 >
                   <LogOut size={14} />
                   <span>Đăng xuất</span>
@@ -173,39 +189,40 @@ export function SiteHeader() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/auth/login"
-              className="text-xs font-semibold text-slate-700 hover:text-orange-600 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors"
+              className="text-xs font-semibold text-stone-700 hover:text-orange-600 px-3 py-2 rounded-lg hover:bg-stone-50 transition-colors"
             >
               Đăng nhập
             </Link>
             <Link
-              className={`${styles.button} ${styles.primaryButton} ${styles.postListing}`}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors"
               href="/auth/login?role=owner&next=%2Fowner%2Fv2%3Fm%3Dtao-tin"
             >
-              <PencilLine size={17} aria-hidden="true" /> Đăng tin
+              <PencilLine size={15} aria-hidden="true" /> Đăng tin
             </Link>
           </div>
         )}
 
         <Link
-          className={`${styles.iconButton} ${styles.mobileOnly}`}
+          className="xl:hidden p-2 text-stone-600 hover:text-stone-900 rounded-lg hover:bg-stone-100 transition-colors"
           href={"/tro-ly-ai?tim_nhanh=1" as any}
           aria-label="Tìm nhà nhanh"
         >
-          <Search size={21} />
+          <Search size={20} />
         </Link>
       </div>
-      <nav
-        id="mobile-navigation"
-        className={styles.mobileNav}
-        aria-label="Điều hướng di động"
-        hidden={!menuOpen}
-      >
-        <div className={styles.container}>
+
+      {/* Mobile nav panel */}
+      {menuOpen && (
+        <nav
+          id="mobile-navigation"
+          className="xl:hidden bg-white border-b border-stone-200 px-4 py-4 space-y-1 shadow-lg"
+          aria-label="Điều hướng di động"
+        >
           {/* Mobile auth summary */}
           {isAuthenticated && user ? (
-            <div className="p-3.5 bg-slate-100/80 border border-slate-200 rounded-xl mb-4 flex items-center justify-between">
+            <div className="p-3.5 bg-stone-50 border border-stone-200 rounded-xl mb-4 flex items-center justify-between">
               <div>
-                <div className="font-bold text-slate-900 text-sm">{user.fullName}</div>
+                <div className="font-bold text-stone-900 text-sm">{user.fullName}</div>
                 <div className="text-xs text-orange-600 font-semibold uppercase">
                   {user.role === "renter" ? "Người thuê" : "Chủ nhà"}
                 </div>
@@ -222,10 +239,10 @@ export function SiteHeader() {
               </button>
             </div>
           ) : (
-            <div className="pb-3 mb-3 border-b border-slate-200 flex items-center gap-2">
+            <div className="pb-3 mb-3 border-b border-stone-200 flex items-center gap-2">
               <Link
                 href="/auth/login"
-                className="w-full py-2 text-center text-sm font-semibold bg-orange-500 text-white rounded-xl"
+                className="w-full py-2 text-center text-sm font-semibold bg-orange-600 text-white rounded-xl"
                 onClick={() => setMenuOpen(false)}
               >
                 Đăng nhập HomeMatch
@@ -233,7 +250,15 @@ export function SiteHeader() {
             </div>
           )}
 
-          {isAuthenticated && user?.role === "owner" && <Link href="/owner/v2" onClick={() => setMenuOpen(false)}><House size={16} aria-hidden="true" /> Khu vực chủ nhà</Link>}
+          {isAuthenticated && user?.role === "owner" && (
+            <Link
+              href="/owner/v2"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-stone-700 hover:bg-stone-50"
+            >
+              <House size={16} aria-hidden="true" className="text-orange-600" /> Khu vực chủ nhà
+            </Link>
+          )}
 
           {navigation.map((item) => (
             <Link
@@ -241,16 +266,25 @@ export function SiteHeader() {
               key={item.label}
               aria-current={pathname === item.path ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
+                pathname === item.path
+                  ? "bg-orange-50 text-orange-600 font-bold"
+                  : "text-stone-700 hover:bg-stone-50 font-medium"
+              }`}
             >
-              {item.ai && <Sparkles size={16} aria-hidden="true" />}
+              {item.ai && <Sparkles size={16} className="text-amber-500" aria-hidden="true" />}
               {item.label}
             </Link>
           ))}
-          <Link href={isAuthenticated && user?.role === "owner" ? "/owner/v2?m=tao-tin" : "/auth/login?role=owner&next=%2Fowner%2Fv2%3Fm%3Dtao-tin"} onClick={() => setMenuOpen(false)}>
+          <Link
+            href={isAuthenticated && user?.role === "owner" ? "/owner/v2?m=tao-tin" : "/auth/login?role=owner&next=%2Fowner%2Fv2%3Fm%3Dtao-tin"}
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold text-orange-600 hover:bg-orange-50"
+          >
             <PencilLine size={16} aria-hidden="true" /> Đăng tin cho thuê
           </Link>
-        </div>
-      </nav>
+        </nav>
+      )}
     </header>
   );
 }

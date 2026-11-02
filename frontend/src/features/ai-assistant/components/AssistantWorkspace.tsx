@@ -16,14 +16,14 @@ import {
   Layers,
   CheckCircle2,
 } from "lucide-react";
-import styles from "@/styles/tro-ly-ai.module.css";
 import type { RoomListing, ChatMessage } from "../types";
 import { getAssistantListings, getAssistantReply } from "../api";
 import { AssistantWelcome } from "./AssistantWelcome";
 import { ChatComposer } from "./ChatComposer";
 import { QuickSearchDialog } from "./QuickSearchDialog";
 import { ResultsPanel } from "./ResultsPanel";
-import sharedStyles from "@/styles/landing.module.css";
+import { Button } from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 export function AssistantWorkspace() {
   const searchParams = useSearchParams();
@@ -39,7 +39,7 @@ export function AssistantWorkspace() {
   const [canvasView, setCanvasView] = useState<"list" | "map" | "compare">("list");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [comparedIds, setComparedIds] = useState<string[]>([]);
-  
+
   // Modals & toasts
   const [quickFilterOpen, setQuickFilterOpen] = useState(false);
   const [bookingListing, setBookingListing] = useState<RoomListing | null>(null);
@@ -72,10 +72,17 @@ export function AssistantWorkspace() {
   useEffect(() => {
     let active = true;
     getAssistantListings().then(
-      (data) => { if (active) setListings(data); },
-      (error: unknown) => { if (active) setRequestError(error instanceof Error ? error.message : "Không thể tải dữ liệu phòng."); },
+      data => {
+        if (active) setListings(data);
+      },
+      (error: unknown) => {
+        if (active) setRequestError(error instanceof Error ? error.message : "Không thể tải dữ liệu phòng.");
+      },
     );
-    return () => { active = false; requestVersion.current += 1; };
+    return () => {
+      active = false;
+      requestVersion.current += 1;
+    };
   }, []);
 
   // Initialize from LocalStorage
@@ -120,9 +127,11 @@ export function AssistantWorkspace() {
     setRequestError(null);
 
     // Save to history
-    setSearchHistory((prev) => {
-      const updated = [query, ...prev.filter((item) => item !== query)].slice(0, 8);
-      try { localStorage.setItem("homematch_history", JSON.stringify(updated)); } catch {}
+    setSearchHistory(prev => {
+      const updated = [query, ...prev.filter(item => item !== query)].slice(0, 8);
+      try {
+        localStorage.setItem("homematch_history", JSON.stringify(updated));
+      } catch {}
       return updated;
     });
 
@@ -134,12 +143,11 @@ export function AssistantWorkspace() {
       timestamp: timeStr,
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages(prev => [...prev, userMsg]);
     setInputText("");
     setMode("workspace");
     setIsTyping(true);
 
-    // AI Reasoning simulation
     try {
       const reply = await getAssistantReply(query);
       if (currentRequest !== requestVersion.current) return;
@@ -157,9 +165,10 @@ export function AssistantWorkspace() {
         suggestedPrompts: reply.suggestedPrompts,
       };
 
-      setMessages((prev) => [...prev, agentMsg]);
+      setMessages(prev => [...prev, agentMsg]);
     } catch (error: unknown) {
-      if (currentRequest === requestVersion.current) setRequestError(error instanceof Error ? error.message : "Không thể gửi câu hỏi.");
+      if (currentRequest === requestVersion.current)
+        setRequestError(error instanceof Error ? error.message : "Không thể gửi câu hỏi.");
     } finally {
       if (currentRequest === requestVersion.current) setIsTyping(false);
     }
@@ -167,18 +176,20 @@ export function AssistantWorkspace() {
 
   const handleToggleFavorite = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setFavorites((prev) => {
-      const next = prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id];
-      try { localStorage.setItem("homematch_favs", JSON.stringify(next)); } catch {}
+    setFavorites(prev => {
+      const next = prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id];
+      try {
+        localStorage.setItem("homematch_favs", JSON.stringify(next));
+      } catch {}
       return next;
     });
   };
 
   const handleToggleCompare = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setComparedIds((prev) => {
+    setComparedIds(prev => {
       if (prev.includes(id)) {
-        return prev.filter((item) => item !== id);
+        return prev.filter(item => item !== id);
       }
       if (prev.length >= 2) {
         return [prev[1], id];
@@ -190,14 +201,16 @@ export function AssistantWorkspace() {
   const handleConfirmBooking = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bookingListing) return;
-    setBookingSuccessToast(`Đã lưu lịch hẹn mẫu cho "${bookingListing.title}". Lịch hẹn chưa được gửi đến chủ nhà.`);
+    setBookingSuccessToast(
+      `Đã lưu lịch hẹn mẫu cho "${bookingListing.title}". Lịch hẹn chưa được gửi đến chủ nhà.`,
+    );
     setBookingListing(null);
     setTimeout(() => {
       setBookingSuccessToast(null);
     }, 4500);
   };
 
-  const displayedListings = listings.filter((item) => {
+  const displayedListings = listings.filter(item => {
     if (filterDistrict !== "all" && item.district !== filterDistrict) return false;
     if (item.priceNum > filterMaxPrice) return false;
     return true;
@@ -210,127 +223,146 @@ export function AssistantWorkspace() {
       onDistrictChange={setFilterDistrict}
       onMaxPriceChange={setFilterMaxPrice}
       onClose={() => setQuickFilterOpen(false)}
-      onReset={() => { setFilterDistrict("all"); setFilterMaxPrice(10000000); }}
+      onReset={() => {
+        setFilterDistrict("all");
+        setFilterMaxPrice(10000000);
+      }}
       onApply={() => {
         setQuickFilterOpen(false);
-        triggerSearch(`Lọc phòng tại ${filterDistrict === "all" ? "toàn thành phố" : filterDistrict} với ngân sách dưới ${filterMaxPrice / 1000000} triệu`);
+        triggerSearch(
+          `Lọc phòng tại ${filterDistrict === "all" ? "toàn thành phố" : filterDistrict} với ngân sách dưới ${
+            filterMaxPrice / 1000000
+          } triệu`,
+        );
       }}
     />
   );
 
   return (
-    <main className={`${sharedStyles.siteShell} ${styles.wsPage}`} id="main-content">
-      {requestError && <div className={styles.requestError} role="alert">{requestError}</div>}
-      {/* Toast Notification */}
+    <main className="min-h-screen bg-slate-50 text-slate-900" id="main-content">
+      {requestError && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 p-3 rounded-xl bg-rose-600 text-white text-xs font-semibold shadow-lg" role="alert">
+          {requestError}
+        </div>
+      )}
+
+      {/* Booking Toast */}
       {bookingSuccessToast && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 text-sm font-semibold animate-bounce">
-          <CheckCircle2 size={20} />
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl flex items-center gap-3 text-xs sm:text-sm font-semibold animate-bounce">
+          <CheckCircle2 size={18} />
           <span>{bookingSuccessToast}</span>
         </div>
       )}
 
-      <div className={`${styles.ws} ${mode === "workspace" ? styles.wsSplit : ""}`} data-mobile-panel={mobilePanel}>
-        {/* ================= LEFT SECTION (Chat / Hero) ================= */}
-        <section className={styles.wsChat}>
-          {mode === "hero" ? (
-            /* HERO INITIAL VIEW */
-            <AssistantWelcome
-              inputText={inputText}
-              onInputChange={setInputText}
-              onSearch={triggerSearch}
-              onQuickFilter={() => setQuickFilterOpen(open => !open)}
-              onHistory={() => setHistoryOpen(true)}
-              isBusy={isTyping}
-              quickFilter={quickFilterOpen ? quickFilter : null}
-            />
-          ) : (
-            /* WORKSPACE ACTIVE CHAT VIEW */
-            <>
-              <div className={styles.wsChatHead}>
-                <div className={styles.chatAvatar}>
-                  <Image src="/images/landing/assistant.svg" alt="" width={40} height={40} />
-                  <span className={styles.onlineBadge} />
+      {mode === "hero" ? (
+        <AssistantWelcome
+          inputText={inputText}
+          onInputChange={setInputText}
+          onSearch={triggerSearch}
+          onQuickFilter={() => setQuickFilterOpen(open => !open)}
+          onHistory={() => setHistoryOpen(true)}
+          isBusy={isTyping}
+          quickFilter={quickFilterOpen ? quickFilter : null}
+        />
+      ) : (
+        /* Workspace 2-Column Mode */
+        <div className="h-screen flex flex-col md:grid md:grid-cols-[1fr_420px] lg:grid-cols-[1fr_480px] overflow-hidden">
+          {/* ================= LEFT CHAT SECTION ================= */}
+          <section
+            className={cn(
+              "flex flex-col h-full bg-slate-50 border-r border-slate-200 overflow-hidden",
+              mobilePanel === "preview" ? "hidden md:flex" : "flex",
+            )}
+          >
+            {/* Chat Head */}
+            <div className="h-14 px-4 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-orange-100 p-1 flex items-center justify-center shrink-0">
+                  <Image src="/images/landing/assistant.svg" alt="" width={24} height={24} />
                 </div>
-                <div className={styles.chatTitleGroup}>
-                  <strong>HomeMatch Agent</strong>
-                  <small>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Đang trực tuyến • Sẵn sàng tìm phòng
+                <div>
+                  <strong className="text-xs font-bold text-slate-900 block leading-tight">HomeMatch Agent</strong>
+                  <small className="text-[10px] text-slate-400 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Trực tuyến • Sẵn sàng tìm phòng
                   </small>
                 </div>
-
-                <div className={styles.chatHeadActions}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMode("hero");
-                      setMessages([]);
-                      requestVersion.current += 1;
-                      setIsTyping(false);
-                      setRequestError(null);
-                      setQuickFilterOpen(false);
-                    }}
-                    className={styles.chatHeadBtn}
-                    title="Bắt đầu phiên tìm kiếm mới"
-                  >
-                    <RotateCcw size={13} />
-                    <span>Hỏi mới</span>
-                  </button>
-
-                  <a
-                    href="tel:19001234"
-                    className={styles.chatHeadBtn}
-                    title="Liên hệ tổng đài tư vấn trực tiếp"
-                  >
-                    <Headphones size={13} className="text-orange-500" />
-                    <span>Hỗ trợ viên</span>
-                  </a>
-                </div>
               </div>
 
-              {/* Message Feed */}
-              <div className={styles.messagesList}>
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={msg.sender === "user" ? styles.userBubble : styles.agentBubble}
-                  >
-                    {msg.sender === "agent" && (
-                      <div className={styles.agentMetaRow}>
-                        <Sparkles size={13} /> HomeMatch Agent
-                      </div>
-                    )}
-                    <div>{msg.text}</div>
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setMode("hero");
+                    setMessages([]);
+                    requestVersion.current += 1;
+                    setIsTyping(false);
+                    setRequestError(null);
+                    setQuickFilterOpen(false);
+                  }}
+                  className="h-8 text-xs"
+                  title="Bắt đầu phiên tìm kiếm mới"
+                >
+                  <RotateCcw size={12} />
+                  <span>Hỏi mới</span>
+                </Button>
 
-                    {msg.suggestedPrompts && (
-                      <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-slate-200">
-                        {msg.suggestedPrompts.map((p) => (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => triggerSearch(p)}
-                            className="text-xs bg-white text-slate-700 hover:text-orange-600 hover:border-orange-300 border border-slate-200 px-2.5 py-1 rounded-full transition-colors font-medium text-left"
-                          >
-                            {p}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                <a href="tel:19001234">
+                  <Button variant="ghost" size="sm" className="h-8 text-xs text-orange-600 hover:text-orange-700">
+                    <Headphones size={13} />
+                    <span className="hidden sm:inline">Hỗ trợ</span>
+                  </Button>
+                </a>
+              </div>
+            </div>
 
-                {isTyping && (
-                  <div className={styles.agentBubble}>
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
-                      <span className="animate-spin text-orange-500">✦</span>
-                      <span>HomeMatch Agent đang rà soát dữ liệu phòng trọ...</span>
+            {/* Messages Feed */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5">
+              {messages.map(msg => (
+                <div
+                  key={msg.id}
+                  className={cn(
+                    "p-3.5 rounded-2xl text-xs leading-relaxed max-w-[85%] shadow-xs",
+                    msg.sender === "user"
+                      ? "ml-auto bg-orange-500 text-white rounded-tr-xs"
+                      : "mr-auto bg-white border border-slate-200 text-slate-800 rounded-tl-xs space-y-2",
+                  )}
+                >
+                  {msg.sender === "agent" && (
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-orange-600 uppercase tracking-wider pb-1 border-b border-slate-100">
+                      <Sparkles size={12} /> HomeMatch Agent
                     </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
+                  )}
+                  <div>{msg.text}</div>
 
-              {/* Chat Input Bar */}
+                  {msg.suggestedPrompts && (
+                    <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-100">
+                      {msg.suggestedPrompts.map(p => (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => triggerSearch(p)}
+                          className="text-[11px] bg-slate-50 text-slate-700 hover:text-orange-700 hover:bg-orange-50 hover:border-orange-200 border border-slate-200 px-2.5 py-1 rounded-full transition-colors font-medium text-left"
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {isTyping && (
+                <div className="mr-auto bg-white border border-slate-200 text-slate-500 p-3 rounded-2xl rounded-tl-xs text-xs flex items-center gap-2 shadow-xs">
+                  <span className="animate-spin text-orange-500">✦</span>
+                  <span>HomeMatch Agent đang rà soát dữ liệu phòng trọ...</span>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Chat Composer Bottom */}
+            <div className="p-3 bg-white border-t border-slate-200 shrink-0">
               <ChatComposer
                 presentation="conversation"
                 value={inputText}
@@ -341,30 +373,52 @@ export function AssistantWorkspace() {
               >
                 {quickFilterOpen ? quickFilter : null}
               </ChatComposer>
-            </>
-          )}
-        </section>
+            </div>
+          </section>
 
-        {/* ================= RIGHT SECTION (Canvas Preview) ================= */}
-        {mode === "workspace" && (
-          <ResultsPanel
-            canvasView={canvasView}
-            setCanvasView={setCanvasView}
-            displayedListings={displayedListings}
-            listings={listings}
-            favorites={favorites}
-            comparedIds={comparedIds}
-            handleToggleFavorite={handleToggleFavorite}
-            handleToggleCompare={handleToggleCompare}
-            setBookingListing={setBookingListing}
-          />
-        )}
-      </div>
+          {/* ================= RIGHT PREVIEW SECTION ================= */}
+          <div className={cn("h-full overflow-hidden", mobilePanel === "chat" ? "hidden md:block" : "block")}>
+            <ResultsPanel
+              canvasView={canvasView}
+              setCanvasView={setCanvasView}
+              displayedListings={displayedListings}
+              listings={listings}
+              favorites={favorites}
+              comparedIds={comparedIds}
+              handleToggleFavorite={handleToggleFavorite}
+              handleToggleCompare={handleToggleCompare}
+              setBookingListing={setBookingListing}
+            />
+          </div>
+        </div>
+      )}
 
+      {/* Mobile Switch Tabs */}
       {mode === "workspace" && (
-        <nav className={styles.mobileWorkspaceTabs} aria-label="Chuyển giao diện trợ lý">
-          <button type="button" onClick={() => setMobilePanel("chat")} aria-pressed={mobilePanel === "chat"}><MessageSquareHeart size={17} /> Chat</button>
-          <button type="button" onClick={() => setMobilePanel("preview")} aria-pressed={mobilePanel === "preview"}><Layers size={17} /> Workspace ({displayedListings.length})</button>
+        <nav
+          className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-white border-t border-slate-200 grid grid-cols-2 z-30"
+          aria-label="Chuyển giao diện trợ lý"
+        >
+          <button
+            type="button"
+            onClick={() => setMobilePanel("chat")}
+            className={cn(
+              "flex items-center justify-center gap-1.5 text-xs font-semibold transition-colors",
+              mobilePanel === "chat" ? "text-orange-600 bg-orange-50/50" : "text-slate-500",
+            )}
+          >
+            <MessageSquareHeart size={16} /> Chat
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobilePanel("preview")}
+            className={cn(
+              "flex items-center justify-center gap-1.5 text-xs font-semibold transition-colors",
+              mobilePanel === "preview" ? "text-orange-600 bg-orange-50/50" : "text-slate-500",
+            )}
+          >
+            <Layers size={16} /> Danh sách ({displayedListings.length})
+          </button>
         </nav>
       )}
 
@@ -372,18 +426,21 @@ export function AssistantWorkspace() {
       <button
         type="button"
         onClick={() => setFeedbackOpen(true)}
-        className={styles.gopYTab}
+        className="fixed bottom-6 right-6 z-40 hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-900 text-white shadow-xl hover:bg-slate-800 text-xs font-semibold transition-all hover:scale-105 active:scale-95"
       >
-        <MessageSquareHeart size={16} />
+        <MessageSquareHeart size={15} />
         <span>Góp ý</span>
       </button>
-
-      {/* Quick Filter Modal is shared by the welcome and chat composers. */}
 
       {/* Booking Viewing Modal */}
       {bookingListing && (
         <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div role="dialog" aria-modal="true" aria-label="Đặt lịch xem phòng" className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90dvh] overflow-y-auto">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Đặt lịch xem phòng"
+            className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90dvh] overflow-y-auto"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
               <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
                 <CalendarCheck size={18} className="text-orange-500" />
@@ -401,7 +458,9 @@ export function AssistantWorkspace() {
 
             <div className="mb-4 bg-orange-50 border border-orange-200/60 rounded-xl p-3 text-xs">
               <div className="font-bold text-orange-900 mb-1">{bookingListing.title}</div>
-              <div className="text-orange-700 font-semibold">{bookingListing.priceStr} • {bookingListing.address}</div>
+              <div className="text-orange-700 font-semibold">
+                {bookingListing.priceStr} • {bookingListing.address}
+              </div>
             </div>
 
             <form onSubmit={handleConfirmBooking} className="space-y-3.5 text-xs font-semibold text-slate-700">
@@ -412,7 +471,7 @@ export function AssistantWorkspace() {
                   <input
                     type="text"
                     required
-                    defaultValue="Nguyễn Văn An"
+                    placeholder="Ví dụ: Nguyễn Văn An"
                     className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl font-normal focus:outline-orange-500"
                   />
                 </div>
@@ -425,7 +484,7 @@ export function AssistantWorkspace() {
                   <input
                     type="tel"
                     required
-                    defaultValue="0987 654 321"
+                    placeholder="Ví dụ: 0987 654 321"
                     className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl font-normal focus:outline-orange-500"
                   />
                 </div>
@@ -453,19 +512,18 @@ export function AssistantWorkspace() {
               </div>
 
               <div className="pt-3 border-t border-slate-100 flex gap-2">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="md"
                   onClick={() => setBookingListing(null)}
-                  className="flex-1 py-2 text-slate-600 hover:bg-slate-100 rounded-xl font-bold text-xs"
+                  className="flex-1"
                 >
                   Hủy bỏ
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold text-xs"
-                >
+                </Button>
+                <Button type="submit" variant="orange" size="md" className="flex-1">
                   Xác nhận đặt lịch
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -475,7 +533,12 @@ export function AssistantWorkspace() {
       {/* History Modal */}
       {historyOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div role="dialog" aria-modal="true" aria-label="Lịch sử câu hỏi" className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Lịch sử câu hỏi"
+            className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
               <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                 <Clock size={16} className="text-blue-500" />
@@ -517,7 +580,12 @@ export function AssistantWorkspace() {
       {/* Feedback Modal */}
       {feedbackOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div role="dialog" aria-modal="true" aria-label="Góp ý trải nghiệm" className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 max-h-[90dvh] overflow-y-auto">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Góp ý trải nghiệm"
+            className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 max-h-[90dvh] overflow-y-auto"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
               <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
                 <MessageSquareHeart size={18} className="text-rose-500" />
@@ -540,11 +608,13 @@ export function AssistantWorkspace() {
               <div className="py-6 text-center space-y-2">
                 <CheckCircle2 size={36} className="text-emerald-500 mx-auto" />
                 <div className="font-bold text-slate-900 text-sm">Cảm ơn bạn đã đóng góp ý kiến!</div>
-                <div className="text-xs text-slate-500">Ý kiến của bạn giúp chúng tôi cải thiện HomeMatch Agent tốt hơn mỗi ngày.</div>
+                <div className="text-xs text-slate-500">
+                  Ý kiến của bạn giúp chúng tôi cải thiện HomeMatch Agent tốt hơn mỗi ngày.
+                </div>
               </div>
             ) : (
               <form
-                onSubmit={(e) => {
+                onSubmit={e => {
                   e.preventDefault();
                   setFeedbackSent(true);
                 }}
@@ -553,13 +623,18 @@ export function AssistantWorkspace() {
                 <div>
                   <label className="block mb-1">Mức độ hài lòng với gợi ý phòng</label>
                   <div className="flex gap-2">
-                    {["Rất hài lòng", "Hài lòng", "Chưa khớp lắm"].map((lvl) => (
+                    {["Rất hài lòng", "Hài lòng", "Chưa khớp lắm"].map(lvl => (
                       <button
                         key={lvl}
                         type="button"
                         aria-pressed={feedbackRating === lvl}
                         onClick={() => setFeedbackRating(lvl)}
-                        className={`flex-1 py-1.5 border rounded-lg hover:bg-orange-50 hover:border-orange-400 text-xs font-medium ${feedbackRating === lvl ? "bg-orange-50 border-orange-400 text-orange-700" : "border-slate-200 text-slate-700"}`}
+                        className={cn(
+                          "flex-1 py-1.5 border rounded-lg hover:bg-orange-50 hover:border-orange-400 text-xs font-medium transition-colors",
+                          feedbackRating === lvl
+                            ? "bg-orange-50 border-orange-400 text-orange-700"
+                            : "border-slate-200 text-slate-700",
+                        )}
                       >
                         {lvl}
                       </button>
@@ -577,13 +652,10 @@ export function AssistantWorkspace() {
                   />
                 </div>
 
-                <div className="pt-2 flex gap-2">
-                  <button
-                    type="submit"
-                    className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold text-xs"
-                  >
+                <div className="pt-2">
+                  <Button type="submit" variant="orange" size="md" className="w-full">
                     Gửi góp ý
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
