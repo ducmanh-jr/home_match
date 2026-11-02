@@ -21,7 +21,7 @@ export async function getOwnerListings(ownerId: string): Promise<OwnerListing[]>
 
 export async function getListingWorkspace(ownerId: string): Promise<ListingWorkspace> {
   requireMocks();
-  const [inventory, listings, { ownerPreview }] = await Promise.all([getPropertyInventory(), getOwnerListings(ownerId), import("@/features/owner-dashboard/mocks")]);
+  const [inventory, listings, { ownerPreview }] = await Promise.all([getPropertyInventory(), getOwnerListings(ownerId), import("@/features/dashboard/mocks")]);
   return { ...inventory, listings, leads: ownerPreview.leads };
 }
 

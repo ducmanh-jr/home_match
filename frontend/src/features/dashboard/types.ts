@@ -23,3 +23,4 @@ export interface OwnerPreviewData {
   leases: { id: string; roomId: string; tenantName: string; monthlyRent: number; deposit: number }[];
   invoices: { id: string; leaseId: string; amount: number; paidAmount: number; status: "paid" | "pending" }[];
 }
+

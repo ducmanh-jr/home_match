@@ -23,3 +23,4 @@ export const ownerPreview: OwnerPreviewData = {
     { id: "invoice-02", leaseId: "lease-02", amount: 3800000, paidAmount: 0, status: "pending" },
   ],
 };
+

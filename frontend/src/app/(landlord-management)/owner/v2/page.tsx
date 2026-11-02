@@ -1,11 +1,14 @@
 import { getOwnerModule } from "@/components/layout/owner-navigation";
 import { OwnerSectionPlaceholder } from "@/components/layout/OwnerSectionPlaceholder";
-import { OwnerOverview } from "@/features/owner-dashboard/components/OwnerOverview";
+import { OwnerOverview } from "@/features/dashboard/components/OwnerOverview";
 import { OwnerProperties } from "@/features/properties/components/OwnerProperties";
 import { OwnerListings } from "@/features/listings/components/OwnerListings";
 import { ListingEditor } from "@/features/listings/components/ListingEditor";
 import { LeasingWorkspace } from "@/features/leasing/components/LeasingWorkspace";
 import { InvoiceList } from "@/features/billing/components/InvoiceList";
+import { LeadsView } from "@/features/viewings/components/LeadsView";
+import { ViewingScheduleView } from "@/features/viewings/components/ViewingScheduleView";
+import { SettingsView } from "@/features/settings/components/SettingsView";
 
 export default async function OwnerPage({
   searchParams,
@@ -44,6 +47,20 @@ export default async function OwnerPage({
   // Billing Module (Thu tiền & Công nợ)
   if (module.id === "thu-tien") {
     return <InvoiceList />;
+  }
+
+  // Viewings & Leads (Khách quan tâm & Lịch xem phòng)
+  if (module.id === "khach-quan-tam") {
+    return <LeadsView />;
+  }
+
+  if (module.id === "lich-xem") {
+    return <ViewingScheduleView />;
+  }
+
+  // Settings (Cài đặt)
+  if (module.id === "cai-dat") {
+    return <SettingsView />;
   }
 
   return <OwnerSectionPlaceholder moduleId={module.id} />;

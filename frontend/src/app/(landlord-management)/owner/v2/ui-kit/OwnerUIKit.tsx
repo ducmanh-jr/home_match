@@ -3,18 +3,17 @@
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, FilePlus2, Search } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, buttonClasses, Card, Badge } from "@/components/ui";
+import { Button, buttonClasses, Card } from "@/components/ui";
 import {
   ManagementBadge,
-  ManagementCard,
   ManagementDialog,
   ManagementState,
   ManagementTable,
   ManagementToast,
 } from "@/components/management/ManagementUI";
 import { ownerModuleHref } from "@/components/layout/owner-navigation";
-import { useOwnerPreview } from "../use-owner-preview";
-import type { OwnerRoom } from "../types";
+import { useOwnerPreview } from "@/features/dashboard/use-owner-preview";
+import type { OwnerRoom } from "@/features/dashboard/types";
 import { cn } from "@/lib/utils";
 
 const statuses = {
@@ -433,3 +432,4 @@ export function OwnerUIKit() {
     </div>
   );
 }
+

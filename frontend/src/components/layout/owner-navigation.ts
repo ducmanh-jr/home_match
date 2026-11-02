@@ -139,6 +139,22 @@ export const ownerModules: OwnerModuleDefinition[] = [
 
   // KHÁCH HÀNG
   {
+    id: "khach-quan-tam",
+    label: "Khách quan tâm",
+    shortLabel: "Khách",
+    group: "KHÁCH HÀNG",
+    icon: Users,
+    description: "Theo dõi khách hỏi thuê và căn phòng khách đang quan tâm.",
+  },
+  {
+    id: "lich-xem",
+    label: "Lịch xem phòng",
+    shortLabel: "Lịch xem",
+    group: "KHÁCH HÀNG",
+    icon: CalendarDays,
+    description: "Sắp xếp lịch hẹn dẫn khách đến xem phòng trực tiếp.",
+  },
+  {
     id: "bao-cao",
     label: "Báo cáo & phân tích",
     shortLabel: "Báo cáo",
@@ -164,6 +180,14 @@ export const ownerModules: OwnerModuleDefinition[] = [
     group: "CÀI ĐẶT",
     icon: Bell,
     description: "Các cập nhật về tin đăng, khách quan tâm, hợp đồng và lịch xem.",
+  },
+  {
+    id: "cai-dat",
+    label: "Cài đặt",
+    shortLabel: "Cài đặt",
+    group: "CÀI ĐẶT",
+    icon: Settings,
+    description: "Hồ sơ tài khoản, bảo mật và thiết lập quản lý của bạn.",
   },
 ];
 

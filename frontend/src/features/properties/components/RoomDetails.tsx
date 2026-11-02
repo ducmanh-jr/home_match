@@ -6,7 +6,7 @@ import { useState } from "react";
 import { FilePlus2 } from "lucide-react";
 import { Button, buttonClasses, Badge } from "@/components/ui";
 import { ManagementDialog } from "@/components/management/ManagementUI";
-import { useOwnerPreview } from "@/features/owner-dashboard/use-owner-preview";
+import { useOwnerPreview } from "@/features/dashboard/use-owner-preview";
 import { formatMoney } from "@/features/listings/constants";
 import type { ListingWorkspace } from "@/features/listings/types";
 import type { PropertyRoom } from "../types";
