@@ -1,4 +1,0 @@
-# An toan bo file Migration tu sinh cua EF Core
-**/Migrations/*.cs linguist-generated=true
-**/Migrations/*.Designer.cs linguist-generated=true
-**/Migrations/*ModelSnapshot.cs linguist-generated=true
