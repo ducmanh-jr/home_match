@@ -1,0 +1,33 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .contract-print-area,
+  .contract-print-area * {
+    visibility: visible;
+  }
+
+  .contract-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    font-family: 'Times New Roman', Times, serif !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 20mm 15mm 20mm 20mm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+

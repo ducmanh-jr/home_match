@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Badge } from "@/components/Badge";
-import { Button } from "@/components/Button";
-import { Card, CardHeader, CardTitle } from "@/components/Card";
+import { Badge, Button, Card, CardHeader, CardTitle } from "@/components/ui";
+
+
 import { fetchHealth, fetchSystemStatus } from "@/lib/api-client";
 import { HealthCheck, SystemStatus } from "@/types";
 
